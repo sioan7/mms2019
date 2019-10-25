@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">WorldCanvas</string>
     <string name="name">Name</string>
+    <string name="sign_out">SIGN OUT</string>
+
+
 </resources>
