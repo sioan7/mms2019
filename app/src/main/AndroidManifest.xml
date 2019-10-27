@@ -16,6 +16,9 @@
         android:theme="@style/AppTheme">
 
         <meta-data android:name="com.google.ar.core" android:value="reguired"/>
+        <meta-data
+            android:name="com.google.android.geo.AIzaSyAzByGjP78wBVTwMClmvhypDx37mYsVEvg"
+            android:value="AIzaSyAzByGjP78wBVTwMClmvhypDx37mYsVEvg"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
