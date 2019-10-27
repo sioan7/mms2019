@@ -8,11 +8,6 @@ import android.graphics.Bitmap
 import android.content.Context
 import android.os.Build
 import android.annotation.TargetApi
-import android.app.Activity
-import android.graphics.Rect
-import android.os.Handler
-import android.view.PixelCopy
-import android.view.View
 import androidx.core.content.ContextCompat
 
 

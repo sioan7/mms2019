@@ -2,18 +2,20 @@ package com.example.worldcanvas
 
 import android.content.Context
 import android.graphics.*
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.MotionEvent
-import android.view.View
 import android.view.ViewGroup.LayoutParams
-import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatImageView
 import com.caverock.androidsvg.SVG
 
 
-class CanvasView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null) : ImageView(context) {
+class CanvasView
+@JvmOverloads constructor(
+    context: Context,
+    attributeSet: AttributeSet? = null
+) : AppCompatImageView(context) {
 
-    var params: LayoutParams
+    private var params: LayoutParams
     private val path = Path()
     private val brush = Paint()
 
