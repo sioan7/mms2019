@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "209786549991",
+    "firebase_url": "https://worldcanvas-49093.firebaseio.com",
+    "project_id": "worldcanvas-49093",
+    "storage_bucket": "worldcanvas-49093.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:209786549991:android:e30ec3e8f819bdb2cb5442",
+        "android_client_info": {
+          "package_name": "com.example.worldcanvas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "209786549991-5bu554hlvbjplep77nkeg47f0h2s6dv1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.worldcanvas",
+            "certificate_hash": "32f7df381d76518a42e4415ae7a0ed29e1fc58ef"
+          }
+        },
+        {
+          "client_id": "209786549991-i9tgsbbmqkmkrmtbtujseboqd2dvo7m7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.worldcanvas",
+            "certificate_hash": "6c56370ac724ffd08b5416aa10df1dbf2a0eab2e"
+          }
+        },
+        {
+          "client_id": "209786549991-uo5pckpj76pdhpedrc4b95rve4317fm9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyjZYuRHjZYSPqkQ1moSwNagWd8fgIHIY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "209786549991-uo5pckpj76pdhpedrc4b95rve4317fm9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
