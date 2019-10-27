@@ -2,6 +2,8 @@
     <string name="app_name">WorldCanvas</string>
     <string name="name">Name</string>
     <string name="sign_out">SIGN OUT</string>
+    <string name="go_to_canvas">To Canvas</string>
+    <string name="go_to_scene">To Scene</string>
 
 
 </resources>

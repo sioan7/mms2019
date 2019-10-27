@@ -37,46 +37,25 @@ class ArActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var mediaPlayer: MediaPlayer
 
-    internal var selected = 1
+    private var selected = 1
 
     override fun onClick(view: View?) {
-        if (view!!.id == R.id.bear) {
-            selected = 1
-            mySetBackground(view.id)
-        } else if (view.id == R.id.cat) {
-            selected = 2
-            mySetBackground(view.id)
-        } else if (view.id == R.id.cow) {
-            selected = 3
-            mySetBackground(view.id)
-        } else if (view.id == R.id.dog) {
-            selected = 4
-            mySetBackground(view.id)
-        } else if (view.id == R.id.elephant) {
-            selected = 5
-            mySetBackground(view.id)
-        } else if (view.id == R.id.ferret) {
-            selected = 6
-            mySetBackground(view.id)
-        } else if (view.id == R.id.hippopotamus) {
-            selected = 7
-            mySetBackground(view.id)
-        } else if (view.id == R.id.horse) {
-            selected = 8
-            mySetBackground(view.id)
-        } else if (view.id == R.id.koala_bear) {
-            selected = 9
-            mySetBackground(view.id)
-        } else if (view.id == R.id.lion) {
-            selected = 10
-            mySetBackground(view.id)
-        } else if (view.id == R.id.reindeer) {
-            selected = 11
-            mySetBackground(view.id)
-        } else if (view.id == R.id.wolverine) {
-            selected = 12
-            mySetBackground(view.id)
+        selected = when (view!!.id) {
+            R.id.bear -> 1
+            R.id.cat -> 2
+            R.id.cow -> 3
+            R.id.dog -> 4
+            R.id.elephant -> 5
+            R.id.ferret -> 6
+            R.id.hippopotamus -> 7
+            R.id.horse -> 8
+            R.id.koala_bear -> 9
+            R.id.lion -> 10
+            R.id.reindeer -> 11
+            R.id.wolverine -> 12
+            else -> 1
         }
+        mySetBackground(view.id)
     }
 
     private fun mySetBackground(id: Int) {
@@ -102,8 +81,8 @@ class ArActivity : AppCompatActivity(), View.OnClickListener {
         arFragment = supportFragmentManager.findFragmentById(R.id.scene_form_fragment) as ArFragment
 
         arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
-            var anchor = hitResult.createAnchor()
-            var anchorNode = AnchorNode(anchor)
+            val anchor = hitResult.createAnchor()
+            val anchorNode = AnchorNode(anchor)
             anchorNode.setParent(arFragment.arSceneView.scene)
             createModel(anchorNode, selected)
         }
