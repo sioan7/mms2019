@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "209786549991-5bu554hlvbjplep77nkeg47f0h2s6dv1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.worldcanvas",
+            "certificate_hash": "32f7df381d76518a42e4415ae7a0ed29e1fc58ef"
+          }
+        },
+        {
           "client_id": "209786549991-i9tgsbbmqkmkrmtbtujseboqd2dvo7m7.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
