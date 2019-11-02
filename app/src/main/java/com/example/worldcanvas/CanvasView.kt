@@ -15,6 +15,8 @@ class CanvasView
     attributeSet: AttributeSet? = null
 ) : AppCompatImageView(context) {
 
+    val color = Color.MAGENTA
+
     private var params: LayoutParams
     private val path = Path()
     private val brush = Paint()
@@ -43,7 +45,7 @@ class CanvasView
     init {
 
         brush.isAntiAlias = true
-        brush.color = Color.MAGENTA
+        brush.color = color
         brush.style = Paint.Style.STROKE
         brush.strokeJoin = Paint.Join.ROUND
         brush.strokeWidth = 8f
