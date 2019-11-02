@@ -1,6 +1,7 @@
 package com.example.worldcanvas
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -18,10 +19,12 @@ import androidx.core.content.ContextCompat
 
 class CanvasActivity : AppCompatActivity() {
 
+    private var canvasView: CanvasView? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var canvasView = CanvasView(this)
+        canvasView = CanvasView(this)
         setContentView(R.layout.activity_canvas)
 
     }
@@ -29,6 +32,7 @@ class CanvasActivity : AppCompatActivity() {
 
     fun goToAR(view: View) {
         val intent = Intent(this, ArActivity::class.java)
+        intent.putExtra("COLOR", canvasView?.color ?: Color.MAGENTA)
         startActivity(intent)
     }
 }

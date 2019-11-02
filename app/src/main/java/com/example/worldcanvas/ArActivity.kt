@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.math.Vector3
+import com.google.ar.sceneform.rendering.MaterialFactory
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.ar.sceneform.ux.ArFragment
@@ -63,12 +64,33 @@ class ArActivity : AppCompatActivity(), View.OnClickListener {
         val node = TransformableNode(arFragment.transformationSystem)
         node.setParent(anchorNode)
         val arObject = arData[selected]
-        node.renderable = arObject?.model
-        node.localScale = Vector3(50f, 50f, 50f)
-        node.scaleController.maxScale = 50f
-        node.scaleController.minScale = 10f
-        node.select()
-        addName(anchorNode, node, arObject?.modelName.orEmpty())
+
+//        Texture.builder()
+//            .setSource(intent.getParcelableExtra("BITMAP") as Bitmap)
+//            .setSource(Bitmap.createBitmap(1000, 1000, Bitmap.Config.ARGB_8888))
+//            .build()
+
+        val nodeSetup = {
+            node.localScale = Vector3(50f, 50f, 50f)
+            node.scaleController.maxScale = 50f
+            node.scaleController.minScale = 10f
+            node.select()
+            addName(anchorNode, node, arObject?.modelName.orEmpty())
+        }
+        if (intent.hasExtra("COLOR")) {
+            val customColor = intent.getIntExtra("COLOR", Color.MAGENTA)
+            MaterialFactory
+                .makeOpaqueWithColor(this, com.google.ar.sceneform.rendering.Color(customColor))
+                .thenAccept {
+                    val model = arObject?.model
+                    model?.material = it
+                    node.renderable = model
+                    nodeSetup()
+                }
+        } else {
+            node.renderable = arObject?.model
+            nodeSetup()
+        }
     }
 
     private fun addName(anchorNode: AnchorNode, node: TransformableNode, name: String) {
