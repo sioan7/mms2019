@@ -33,7 +33,7 @@ class CanvasView
 
     private val imagePosition: RectF
 
-    private val floodFiller = QueueLinearFloodFiller(lionBMP)
+    private val floodFiller = QueueLinearFloodFiller(lionBMP, Color.BLACK, Color.GREEN)
 
     init {
         brush.isAntiAlias = true
@@ -50,6 +50,9 @@ class CanvasView
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+
+//        floodFiller.fillColor = Color.GREEN
+        floodFiller.floodFill(0, 0)
 
         canvas.drawBitmap(lionBMP, null, imagePosition, brush)
 
