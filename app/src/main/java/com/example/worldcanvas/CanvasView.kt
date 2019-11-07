@@ -10,6 +10,7 @@ import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.util.DisplayMetrics
 import android.util.Log
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.view.MotionEvent
 import android.view.WindowManager
 
 
@@ -29,11 +30,11 @@ class CanvasView
     val dm = DisplayMetrics()
     val wm: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
-    private val lionBMP: Bitmap = BitmapFactory.decodeResource(resources, R.raw.lion_bmp).copy(Bitmap.Config.ARGB_8888, true)
+    private val lionBMP: Bitmap = BitmapFactory
+        .decodeResource(resources, R.raw.lion_bmp)
+        .copy(Bitmap.Config.ARGB_8888, true)
 
     private val imagePosition: RectF
-
-    private val floodFiller = QueueLinearFloodFiller(lionBMP, Color.BLACK, Color.GREEN)
 
     init {
         brush.isAntiAlias = true
@@ -45,17 +46,30 @@ class CanvasView
         wm.defaultDisplay.getMetrics(dm)
 
         imagePosition = centerBitmapViewport(lionBMP, dm)
-
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-
-//        floodFiller.fillColor = Color.GREEN
-        floodFiller.floodFill(0, 0)
-
         canvas.drawBitmap(lionBMP, null, imagePosition, brush)
+    }
 
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        val x = (event.x - imagePosition.left).toInt()
+        val y = (event.y - imagePosition.top).toInt()
+        if (x < 0 || x >= lionBMP.width|| y < 0 || y >= lionBMP.height ) return false
+        return when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                floodFill(
+                    image = lionBMP,
+                    target = Point(x, y),
+                    targetColor = lionBMP.getPixel(x, y),
+                    replacementColor = Color.MAGENTA
+                )
+                postInvalidate()
+                true
+            }
+            else -> false
+        }
     }
 
     private fun centerBitmapViewport(bitmap: Bitmap, dm: DisplayMetrics, threshold: Float = 100f): RectF{
