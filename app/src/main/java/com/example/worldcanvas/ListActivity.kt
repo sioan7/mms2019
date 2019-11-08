@@ -56,14 +56,7 @@ class ListActivity : AppCompatActivity() {
             }
         })
 
-        mListView.onItemClickListener = object : AdapterView.OnItemClickListener {
-            override fun onItemClick(adapterView: AdapterView<*>?, view: View?, i: Int, p3: Long) {
-
-                //"connect to the right canvas"
-            }
-        }
-
-
+        mListView.onItemClickListener = AdapterView.OnItemClickListener { _, _, _, _ -> goToCanvas() }
     }
 
 
@@ -106,6 +99,11 @@ class ListActivity : AppCompatActivity() {
 
             }
         }
+    }
+
+    private fun goToCanvas() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
     }
 
     private fun showSignInOptions() {
