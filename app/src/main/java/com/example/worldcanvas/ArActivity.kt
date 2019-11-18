@@ -7,7 +7,13 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.ar.core.Frame
+import com.google.ar.core.Plane
+import com.google.ar.core.Pose
+import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.AnchorNode
+import com.google.ar.sceneform.FrameTime
+import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.MaterialFactory
 import com.google.ar.sceneform.rendering.ModelRenderable
@@ -23,13 +29,15 @@ data class ARObject(
     val modelName: String
 )
 
-class ArActivity : AppCompatActivity(), View.OnClickListener {
+class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateListener {
+
 
     private lateinit var mediaPlayer: MediaPlayer
     private lateinit var arFragment: ArFragment
 
     private var arData = mutableMapOf<Int, ARObject>()
     private var selected: Int = 0
+    private var checker: Int = 0
 
     override fun onClick(view: View?) {
         selected = arData.values.find { it.view.id == view!!.id }?.resourceId ?: 0
@@ -48,16 +56,101 @@ class ArActivity : AppCompatActivity(), View.OnClickListener {
         setupARData()
 
         mediaPlayer = MediaPlayer.create(this, R.raw.grizzlybearroar)
-
+        selected = intent.getIntExtra("Position",0)
         arFragment = supportFragmentManager.findFragmentById(R.id.scene_form_fragment) as ArFragment
 
-        arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
-            val anchor = hitResult.createAnchor()
-            val anchorNode = AnchorNode(anchor)
-            anchorNode.setParent(arFragment.arSceneView.scene)
-            createModel(anchorNode, selected)
+        arFragment.arSceneView.scene.addOnUpdateListener(this@ArActivity)
+
+
+//        arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
+//            val anchor = hitResult.createAnchor()
+//            val anchorNode = AnchorNode(anchor)
+//            anchorNode.setParent(arFragment.arSceneView.scene)
+//            createModel(anchorNode, selected)
+//        }
+
+    }
+
+    override fun onUpdate(p0: FrameTime?) {
+        //get the frame from the scene for shorthand
+        val frame = arFragment.arSceneView.arFrame
+        //val arObject = arData[selected]
+
+        if (frame != null && checker ==0) {
+            //get the trackables to ensure planes are detected
+            val var3 = frame.getUpdatedTrackables(Plane::class.java).iterator()
+            while(var3.hasNext()) {
+                val plane = var3.next() as Plane
+
+                //If a plane has been detected & is being tracked by ARCore
+                if (plane.trackingState == TrackingState.TRACKING) {
+
+                    //Hide the plane discovery helper animation
+                    arFragment.planeDiscoveryController.hide()
+
+
+                    //Get all added anchors to the frame
+                    val iterableAnchor = frame.updatedAnchors.iterator()
+
+                    //place the first object only if no previous anchors were added
+                    if(!iterableAnchor.hasNext()) {
+                        //Perform a hit test at the center of the screen to place an object without tapping
+                        val hitTest = frame.hitTest(frame.screenCenter().x, frame.screenCenter().y)
+
+                        //iterate through all hits
+                        val hitTestIterator = hitTest.iterator()
+                        while(hitTestIterator.hasNext()) {
+                            val hitResult = hitTestIterator.next()
+
+                            //Create an anchor at the plane hit
+                            val modelAnchor = plane.createAnchor(hitResult.hitPose)
+
+                            //Attach a node to this anchor with the scene as the parent
+                            val anchorNode = AnchorNode(modelAnchor)
+                            anchorNode.setParent(arFragment.arSceneView.scene)
+
+                            //create a new TranformableNode that will carry our object
+                            val transformableNode = TransformableNode(arFragment.transformationSystem)
+                            transformableNode.setParent(anchorNode)
+                            val nodeSetup = {
+//                                transformableNode.localScale = Vector3(50f, 50f, 50f)
+//                                transformableNode.scaleController.maxScale = 50f
+//                                transformableNode.scaleController.minScale = 10f
+                                transformableNode.select()
+                                addName(anchorNode, transformableNode, arData[selected]?.modelName.orEmpty())
+                            }
+                            if (intent.hasExtra("COLOR")) {
+                                val customColor = intent.getIntExtra("COLOR", Color.MAGENTA)
+                                MaterialFactory
+                                        .makeOpaqueWithColor(this, com.google.ar.sceneform.rendering.Color(customColor))
+                                        .thenAccept {
+                                            val model = arData[selected]?.model
+                                            model?.material = it
+                                            transformableNode.renderable = model
+                                            nodeSetup()
+                                        }
+                            } else {
+                                transformableNode.renderable = arData[selected]?.model
+                                nodeSetup()
+                            }
+
+                            //Alter the real world position to ensure object renders on the table top. Not somewhere inside.
+                            transformableNode.worldPosition = Vector3(modelAnchor.pose.tx(),
+                                    modelAnchor.pose.compose(Pose.makeTranslation(0f, 0.05f, 0f)).ty(),
+                                    modelAnchor.pose.tz())
+                            checker = 1
+                        }
+                    }
+                }
+            }
         }
 
+    }
+
+    //A method to find the screen center. This is used while placing objects in the scene
+    private fun Frame.screenCenter(): Vector3 {
+        val vw = findViewById<View>(android.R.id.content)
+        return Vector3(vw.width / 2f, vw.height / 2f, 0f)
     }
 
     private fun createModel(anchorNode: AnchorNode, selected: Int) {

@@ -1,17 +1,12 @@
 package com.example.worldcanvas
 
 import android.content.Context
-import android.util.AttributeSet
-import android.view.View
-import android.view.ViewGroup.LayoutParams
-import androidx.appcompat.widget.AppCompatImageView
 import android.graphics.*
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.util.AttributeSet
 import android.util.DisplayMetrics
-import android.util.Log
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.view.MotionEvent
 import android.view.WindowManager
+import androidx.appcompat.widget.AppCompatImageView
 
 
 class CanvasView
@@ -30,11 +25,12 @@ class CanvasView
     val dm = DisplayMetrics()
     val wm: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
-    private val lionBMP: Bitmap = BitmapFactory
-        .decodeResource(resources, R.raw.lion_bmp)
+
+     var bmpImage: Bitmap = BitmapFactory
+        .decodeResource(resources, context.getSharedPreferences("PREFERENCE_NAME",Context.MODE_PRIVATE).getInt("Canvas",0))
         .copy(Bitmap.Config.ARGB_8888, true)
 
-    private val imagePosition: RectF
+    var imagePosition: RectF
 
     init {
         brush.isAntiAlias = true
@@ -45,24 +41,24 @@ class CanvasView
 
         wm.defaultDisplay.getMetrics(dm)
 
-        imagePosition = centerBitmapViewport(lionBMP, dm)
+        imagePosition = centerBitmapViewport(bmpImage, dm)
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        canvas.drawBitmap(lionBMP, null, imagePosition, brush)
+        canvas.drawBitmap(bmpImage, null, imagePosition, brush)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val x = (event.x - imagePosition.left).toInt()
         val y = (event.y - imagePosition.top).toInt()
-        if (x < 0 || x >= lionBMP.width|| y < 0 || y >= lionBMP.height ) return false
+        if (x < 0 || x >= bmpImage.width|| y < 0 || y >= bmpImage.height ) return false
         return when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 floodFill(
-                    image = lionBMP,
+                    image = bmpImage,
                     target = Point(x, y),
-                    targetColor = lionBMP.getPixel(x, y),
+                    targetColor = bmpImage.getPixel(x, y),
                     replacementColor = Color.MAGENTA
                 )
                 postInvalidate()
@@ -72,7 +68,7 @@ class CanvasView
         }
     }
 
-    private fun centerBitmapViewport(bitmap: Bitmap, dm: DisplayMetrics, threshold: Float = 100f): RectF{
+     fun centerBitmapViewport(bitmap: Bitmap, dm: DisplayMetrics, threshold: Float = 100f): RectF{
         val scale = (dm.widthPixels - 2*threshold)/bitmap.width
 
 
@@ -83,4 +79,8 @@ class CanvasView
             dm.heightPixels/2f + bitmap.height*scale/2f
         )
     }
+
 }
+
+
+
