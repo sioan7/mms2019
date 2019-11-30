@@ -8,7 +8,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -23,6 +22,7 @@ import kotlinx.android.synthetic.main.activity_list.*
 class ListActivity : AppCompatActivity() {
 
     lateinit var listOfAnimals: Array<String>
+    lateinit var listOfResources: Array<Int>
     lateinit var providers: List<AuthUI.IdpConfig>
     private val REQUEST_CODE: Int = 2
 
@@ -56,7 +56,7 @@ class ListActivity : AppCompatActivity() {
             }
         })
 
-        mListView.onItemClickListener = AdapterView.OnItemClickListener { _, _, _, _ -> goToCanvas() }
+        mListView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ -> goToCanvas(position) }
     }
 
 
@@ -93,7 +93,6 @@ class ListActivity : AppCompatActivity() {
             if (resultCode == Activity.RESULT_OK) {
                 val user = FirebaseAuth.getInstance().currentUser
                 Toast.makeText(this, user!!.email, Toast.LENGTH_SHORT).show()
-                //setContentView(R.layout.activity_list)
             } else {
                 Toast.makeText(this, response!!.error!!.message, Toast.LENGTH_SHORT).show()
 
@@ -101,8 +100,11 @@ class ListActivity : AppCompatActivity() {
         }
     }
 
-    private fun goToCanvas() {
-        val intent = Intent(this, MainActivity::class.java)
+    private fun goToCanvas( position: Int) {
+        val intent = Intent(this, CanvasActivity::class.java)
+        val elementClicked = listOfResources[position]
+        intent.putExtra("Canvas",elementClicked)
+        intent.putExtra("Position", position)
         startActivity(intent)
     }
 
@@ -130,6 +132,21 @@ class ListActivity : AppCompatActivity() {
                 "Lion",
                 "Reindeer",
                 "Wolverine"
+        )
+
+        listOfResources = arrayOf(
+                R.raw.bear_image,
+                R.raw.cat_image,
+                R.raw.cow_image,
+                R.raw.dog_image,
+                R.raw.elephant_image,
+                R.raw.ferret_image,
+                R.raw.hippopotamus_image,
+                R.raw.horse_image,
+                R.raw.koala_bear_image,
+                R.raw.lion_bmp,
+                R.raw.reindeer_image,
+                R.raw.wolverine_image
         )
     }
 
