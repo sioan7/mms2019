@@ -40,7 +40,7 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
     private var checker: Int = 0
 
     override fun onClick(view: View?) {
-        selected = arData.values.find { it.view.id == view!!.id }?.resourceId ?: 0
+        selected = arData.values.find { it.view.id == view!!.tag.toString().toInt() }?.resourceId ?: 0
         mySetBackground(view!!.id)
     }
 
@@ -56,18 +56,18 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
         setupARData()
 
         mediaPlayer = MediaPlayer.create(this, R.raw.grizzlybearroar)
-        selected = intent.getIntExtra("Position",0)
+        selected = intent.getIntExtra("Position", 0)
         arFragment = supportFragmentManager.findFragmentById(R.id.scene_form_fragment) as ArFragment
 
         arFragment.arSceneView.scene.addOnUpdateListener(this@ArActivity)
 
 
-//        arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
-//            val anchor = hitResult.createAnchor()
-//            val anchorNode = AnchorNode(anchor)
-//            anchorNode.setParent(arFragment.arSceneView.scene)
-//            createModel(anchorNode, selected)
-//        }
+        arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
+            val anchor = hitResult.createAnchor()
+            val anchorNode = AnchorNode(anchor)
+            anchorNode.setParent(arFragment.arSceneView.scene)
+            createModel(anchorNode, selected)
+        }
 
     }
 
@@ -113,9 +113,9 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
                             val transformableNode = TransformableNode(arFragment.transformationSystem)
                             transformableNode.setParent(anchorNode)
                             val nodeSetup = {
-//                                transformableNode.localScale = Vector3(50f, 50f, 50f)
-//                                transformableNode.scaleController.maxScale = 50f
-//                                transformableNode.scaleController.minScale = 10f
+                                transformableNode.localScale = Vector3(50f, 50f, 50f)
+                                transformableNode.scaleController.maxScale = 50f
+                                transformableNode.scaleController.minScale = 10f
                                 transformableNode.select()
                                 addName(anchorNode, transformableNode, arData[selected]?.modelName.orEmpty())
                             }
@@ -219,14 +219,14 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
             Triple(R.raw.lion, lion, "Lion"),
             Triple(R.raw.reindeer, reindeer, "Reindeer"),
             Triple(R.raw.wolverine, wolverine, "Wolverine")
-        ).forEach { triple ->
+        ).forEachIndexed { index, triple ->
             ModelRenderable
                 .builder()
                 .setSource(this, triple.first).build()
                 .thenAccept {
                     val arObject = ARObject(triple.first, it, triple.second, triple.third)
                     arObject.view.setOnClickListener(this@ArActivity)
-                    arData[triple.first] = arObject
+                    arData[index] = arObject
                 }
                 .exceptionally {
                     Toast.makeText(this@ArActivity, "Unable to load model ${triple.first}", Toast.LENGTH_LONG).show()

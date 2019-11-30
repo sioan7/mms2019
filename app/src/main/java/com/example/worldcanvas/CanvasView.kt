@@ -68,15 +68,13 @@ class CanvasView
         }
     }
 
-     fun centerBitmapViewport(bitmap: Bitmap, dm: DisplayMetrics, threshold: Float = 100f): RectF{
-        val scale = (dm.widthPixels - 2*threshold)/bitmap.width
-
-
+     private fun centerBitmapViewport(bitmap: Bitmap, dm: DisplayMetrics, threshold: Float = 100f): RectF {
+        val scalingFactor = (dm.widthPixels - 2*threshold)/bitmap.width/2
         return RectF(
             threshold,
-            dm.heightPixels/2 - bitmap.height*scale/2f,
+            dm.heightPixels/2 - bitmap.height*scalingFactor,
             dm.widthPixels - threshold,
-            dm.heightPixels/2f + bitmap.height*scale/2f
+            dm.heightPixels/2 + bitmap.height*scalingFactor
         )
     }
 
