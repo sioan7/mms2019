@@ -8,7 +8,7 @@ We should work on our own branches.
 - Canvas Control: LEO
 - Canvas (Click position is wrongly scaled): IOAN
 - Avoid coloring the background of the animal: IOAN
-- FInd mp3 sound for every animal.: BOGDAN
+- FInd mp3 sound for every animal.: BOGDAN  - done
 - Gamification using colour tons:
  - Leaderboard: BOGDAN
  - How to make points: LEO

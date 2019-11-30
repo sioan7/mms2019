@@ -26,7 +26,8 @@ data class ARObject(
     val resourceId: Int,
     val model: ModelRenderable,
     val view: View,
-    val modelName: String
+    val modelName: String,
+    val sound : MediaPlayer
 )
 
 class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateListener {
@@ -54,7 +55,7 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ar)
         setupARData()
-
+        //selected = intent.getIntExtra("Position",0)
         mediaPlayer = MediaPlayer.create(this, R.raw.grizzlybearroar)
         selected = intent.getIntExtra("Position", 0)
         arFragment = supportFragmentManager.findFragmentById(R.id.scene_form_fragment) as ArFragment
@@ -157,6 +158,9 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
         val node = TransformableNode(arFragment.transformationSystem)
         node.setParent(anchorNode)
         val arObject = arData[selected]
+        if (arObject != null) {
+            arObject.sound.start()
+        }
 
 //        Texture.builder()
 //            .setSource(intent.getParcelableExtra("BITMAP") as Bitmap)
@@ -207,29 +211,29 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
 
     private fun setupARData() {
         listOf(
-            Triple(R.raw.bear, bear, "Bear"),
-            Triple(R.raw.cat, cat, "Cat"),
-            Triple(R.raw.cow, cow, "Cow"),
-            Triple(R.raw.dog, dog, "Dog"),
-            Triple(R.raw.elephant, elephant, "Elephant"),
-            Triple(R.raw.ferret, ferret, "Ferret"),
-            Triple(R.raw.hippopotamus, hippopotamus, "Hippopotamus"),
-            Triple(R.raw.horse, horse, "Horse"),
-            Triple(R.raw.koala_bear, koala_bear, "Koala Bear"),
-            Triple(R.raw.lion, lion, "Lion"),
-            Triple(R.raw.reindeer, reindeer, "Reindeer"),
-            Triple(R.raw.wolverine, wolverine, "Wolverine")
-        ).forEachIndexed { index, triple ->
+            Quadruple(R.raw.bear, bear, "Bear",MediaPlayer.create(this, R.raw.bear_sound)),
+            Quadruple(R.raw.cat, cat, "Cat",MediaPlayer.create(this, R.raw.cat_sound)),
+            Quadruple(R.raw.cow, cow, "Cow",MediaPlayer.create(this, R.raw.cow_sound)),
+            Quadruple(R.raw.dog, dog, "Dog",MediaPlayer.create(this, R.raw.dog_sound)),
+            Quadruple(R.raw.elephant, elephant, "Elephant",MediaPlayer.create(this, R.raw.elephant_sound)),
+            Quadruple(R.raw.ferret, ferret, "Ferret",MediaPlayer.create(this, R.raw.ferret_sound)),
+            Quadruple(R.raw.hippopotamus, hippopotamus, "Hippopotamus",MediaPlayer.create(this, R.raw.hippopotamus_sound)),
+            Quadruple(R.raw.horse, horse, "Horse",MediaPlayer.create(this, R.raw.horse_sound)),
+            Quadruple(R.raw.koala_bear, koala_bear, "Koala Bear",MediaPlayer.create(this, R.raw.koala_sound)),
+            Quadruple(R.raw.lion, lion, "Lion",MediaPlayer.create(this, R.raw.lion_sound)),
+            Quadruple(R.raw.reindeer, reindeer, "Reindeer",MediaPlayer.create(this, R.raw.deer_sound)),
+            Quadruple(R.raw.wolverine, wolverine, "Wolverine",MediaPlayer.create(this, R.raw.wolverine_sound))
+        ).forEachIndexed { index, quadruple ->
             ModelRenderable
                 .builder()
-                .setSource(this, triple.first).build()
+                .setSource(this, quadruple.first).build()
                 .thenAccept {
-                    val arObject = ARObject(triple.first, it, triple.second, triple.third)
+                    val arObject = ARObject(quadruple.first, it, quadruple.second, quadruple.third,quadruple.fourth)
                     arObject.view.setOnClickListener(this@ArActivity)
                     arData[index] = arObject
                 }
                 .exceptionally {
-                    Toast.makeText(this@ArActivity, "Unable to load model ${triple.first}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@ArActivity, "Unable to load model ${quadruple.first}", Toast.LENGTH_LONG).show()
                     null
                 }
         }
