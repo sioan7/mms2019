@@ -4,10 +4,10 @@ We should work on our own branches.
 
 ## TASKS
 
-- Connect the elements (Canvas, AR): BOGDAN
+- Connect the elements (Canvas, AR): BOGDAN - done
 - Canvas Control: LEO
-- Canvas (Click position is wrongly scaled): IOAN
-- Avoid coloring the background of the animal: IOAN
+- Canvas (Click position is wrongly scaled): IOAN - done
+- Avoid coloring the background of the animal: IOAN - done
 - FInd mp3 sound for every animal.: BOGDAN  - done
 - Gamification using colour tons:
  - Leaderboard: BOGDAN
