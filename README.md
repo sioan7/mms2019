@@ -12,4 +12,4 @@ We should work on our own branches.
 - Gamification using colour tons:
  - Leaderboard: BOGDAN
  - How to make points: LEO
-- Share the AR scene: BOGDAN
+- Share the AR scene: BOGDAN - done
