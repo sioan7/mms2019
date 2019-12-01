@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         app:mt_hint="true"
         app:mt_maxSuggestionsCount="5"
-        app:mt_speechMode="true"
+        app:mt_speechMode="false"
         app:theme="@style/AppTheme.PopupOverlay"/>
 
     <ListView

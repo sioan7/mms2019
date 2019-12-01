@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-feature android:name="android.hardware.camera.ar" android:required="true"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
@@ -13,23 +15,24 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        >
 
         <meta-data android:name="com.google.ar.core" android:value="required"/>
         <meta-data
             android:name="com.google.android.geo.AIzaSyAzByGjP78wBVTwMClmvhypDx37mYsVEvg"
             android:value="AIzaSyAzByGjP78wBVTwMClmvhypDx37mYsVEvg"/>
-        <activity android:name=".SplashActivity"  android:noHistory="true" android:theme="@style/SplashTheme">
+        <activity android:name=".SplashActivity" android:noHistory="true" android:screenOrientation="portrait" android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CanvasActivity"/>
-        <activity android:name=".ArActivity"/>
-        <activity android:name=".MainActivity"/>
-        <activity android:name=".ListActivity"/>
+        <activity android:name=".CanvasActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ArActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".MainActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ListActivity" android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
