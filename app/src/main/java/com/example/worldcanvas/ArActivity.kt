@@ -1,9 +1,17 @@
 package com.example.worldcanvas
 
+import android.Manifest
+import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.media.MediaPlayer
-import android.os.Bundle
+import android.net.Uri
+import android.os.*
+import android.provider.MediaStore
+import android.util.Log
+import android.view.PixelCopy
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -20,14 +28,24 @@ import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.DexterError
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.PermissionRequestErrorListener
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import kotlinx.android.synthetic.main.activity_ar.*
+import java.io.File
+import java.io.FileOutputStream
+import java.util.*
 
 data class ARObject(
-    val resourceId: Int,
-    val model: ModelRenderable,
-    val view: View,
-    val modelName: String,
-    val sound : MediaPlayer
+        val resourceId: Int,
+        val model: ModelRenderable,
+        val view: View,
+        val modelName: String,
+        val sound: MediaPlayer
 )
 
 class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateListener {
@@ -35,13 +53,17 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
 
     private lateinit var mediaPlayer: MediaPlayer
     private lateinit var arFragment: ArFragment
+    private var btnSS: Button? = null
+    private var btnshare: Button? = null
+    private var sharePath = "no"
 
     private var arData = mutableMapOf<Int, ARObject>()
     private var selected: Int = 0
     private var checker: Int = 0
 
     override fun onClick(view: View?) {
-        selected = arData.values.find { it.view.id == view!!.tag.toString().toInt() }?.resourceId ?: 0
+        selected = arData.values.find { it.view.id == view!!.tag.toString().toInt() }?.resourceId
+                ?: 0
         mySetBackground(view!!.id)
     }
 
@@ -70,6 +92,118 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
             createModel(anchorNode, selected)
         }
 
+        val builder = StrictMode.VmPolicy.Builder()
+        StrictMode.setVmPolicy(builder.build())
+
+        requestReadPermissions()
+
+        btnSS = findViewById(R.id.btnSS)
+        btnshare = findViewById(R.id.btnShare)
+
+
+        btnSS!!.setOnClickListener { takePhoto(arFragment) }
+
+        btnshare!!.setOnClickListener {
+            if (sharePath != "no") {
+                share(sharePath)
+            }
+        }
+
+
+    }
+
+    fun takePhoto(arFragment: ArFragment) {
+        //final String filename = generateFilename();
+        /*ArSceneView view = fragment.getArSceneView();*/
+        val mSurfaceView = arFragment.arSceneView
+        // Create a bitmap the size of the scene view.
+        val bitmap = Bitmap.createBitmap(mSurfaceView.width, mSurfaceView.height,
+                Bitmap.Config.ARGB_8888)
+
+        // Create a handler thread to offload the processing of the image.
+        val handlerThread = HandlerThread("PixelCopier")
+        handlerThread.start()
+
+        val now = Date()
+        android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now)
+
+        PixelCopy.request(mSurfaceView, bitmap, { copyResult ->
+            run {
+                if (copyResult == PixelCopy.SUCCESS) {
+                    try {
+                        // image naming and path  to include sd card  appending name you choose for file
+                        val mPath = Environment.getExternalStorageDirectory().toString() + "/" + now + ".jpeg"
+
+
+                        val imageFile = File(mPath)
+
+                        val outputStream = FileOutputStream(imageFile)
+                        val quality = 100
+                        bitmap?.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
+                        outputStream.flush()
+                        outputStream.close()
+
+                        //setting screenshot in imageview
+                        val filePath = imageFile.path
+
+                        sharePath = filePath
+                        Toast.makeText(applicationContext, "Screenshot was taken and saved in your gallery", Toast.LENGTH_SHORT)
+                                .show()
+                        MediaStore.Images.Media.insertImage(contentResolver, filePath, imageFile.name, imageFile.name)
+
+                    } catch (e: Throwable) {
+                        // Several error may come out with file handling or DOM
+                        e.printStackTrace()
+                    }
+                }
+                handlerThread.quitSafely()
+
+            }
+        }, Handler(handlerThread.looper))
+
+    }
+
+
+    private fun share(sharePath: String) {
+
+        Log.d("ffff", sharePath)
+        val file = File(sharePath)
+        val uri = Uri.fromFile(file)
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "image/*"
+        intent.putExtra(Intent.EXTRA_STREAM, uri)
+        startActivity(intent)
+
+    }
+
+    private fun requestReadPermissions() {
+
+        Dexter.withActivity(this)
+                .withPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .withListener(object : MultiplePermissionsListener {
+                    override fun onPermissionsChecked(report: MultiplePermissionsReport) {
+                        // check if all permissions are granted
+                        if (report.areAllPermissionsGranted()) {
+                            Toast.makeText(applicationContext, "All permissions are granted by user!", Toast.LENGTH_SHORT)
+                                    .show()
+                        }
+
+                        // check for permanent denial of any permission
+                        if (report.isAnyPermissionPermanentlyDenied) {
+                            Toast.makeText(applicationContext, "You will not be able to take screenshot and share it with your friends", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onPermissionRationaleShouldBeShown(permissions: List<PermissionRequest>, token: PermissionToken) {
+                        token.continuePermissionRequest()
+                    }
+                }).withErrorListener(object : PermissionRequestErrorListener {
+                    override fun onError(error: DexterError) {
+                        Toast.makeText(applicationContext, "Some Error! ", Toast.LENGTH_SHORT).show()
+                    }
+                })
+                .onSameThread()
+                .check()
     }
 
     override fun onUpdate(p0: FrameTime?) {
@@ -77,10 +211,10 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
         val frame = arFragment.arSceneView.arFrame
         //val arObject = arData[selected]
 
-        if (frame != null && checker ==0) {
+        if (frame != null && checker == 0) {
             //get the trackables to ensure planes are detected
             val var3 = frame.getUpdatedTrackables(Plane::class.java).iterator()
-            while(var3.hasNext()) {
+            while (var3.hasNext()) {
                 val plane = var3.next() as Plane
 
                 //If a plane has been detected & is being tracked by ARCore
@@ -94,13 +228,13 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
                     val iterableAnchor = frame.updatedAnchors.iterator()
 
                     //place the first object only if no previous anchors were added
-                    if(!iterableAnchor.hasNext()) {
+                    if (!iterableAnchor.hasNext()) {
                         //Perform a hit test at the center of the screen to place an object without tapping
                         val hitTest = frame.hitTest(frame.screenCenter().x, frame.screenCenter().y)
 
                         //iterate through all hits
                         val hitTestIterator = hitTest.iterator()
-                        while(hitTestIterator.hasNext()) {
+                        while (hitTestIterator.hasNext()) {
                             val hitResult = hitTestIterator.next()
 
                             //Create an anchor at the plane hit
@@ -128,10 +262,12 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
                                             val model = arData[selected]?.model
                                             model?.material = it
                                             transformableNode.renderable = model
+                                            arData[selected]?.sound?.start()
                                             nodeSetup()
                                         }
                             } else {
                                 transformableNode.renderable = arData[selected]?.model
+                                arData[selected]?.sound?.start()
                                 nodeSetup()
                             }
 
@@ -177,13 +313,13 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
         if (intent.hasExtra("COLOR")) {
             val customColor = intent.getIntExtra("COLOR", Color.MAGENTA)
             MaterialFactory
-                .makeOpaqueWithColor(this, com.google.ar.sceneform.rendering.Color(customColor))
-                .thenAccept {
-                    val model = arObject?.model
-                    model?.material = it
-                    node.renderable = model
-                    nodeSetup()
-                }
+                    .makeOpaqueWithColor(this, com.google.ar.sceneform.rendering.Color(customColor))
+                    .thenAccept {
+                        val model = arObject?.model
+                        model?.material = it
+                        node.renderable = model
+                        nodeSetup()
+                    }
         } else {
             node.renderable = arObject?.model
             nodeSetup()
@@ -211,31 +347,31 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
 
     private fun setupARData() {
         listOf(
-            Quadruple(R.raw.bear, bear, "Bear",MediaPlayer.create(this, R.raw.bear_sound)),
-            Quadruple(R.raw.cat, cat, "Cat",MediaPlayer.create(this, R.raw.cat_sound)),
-            Quadruple(R.raw.cow, cow, "Cow",MediaPlayer.create(this, R.raw.cow_sound)),
-            Quadruple(R.raw.dog, dog, "Dog",MediaPlayer.create(this, R.raw.dog_sound)),
-            Quadruple(R.raw.elephant, elephant, "Elephant",MediaPlayer.create(this, R.raw.elephant_sound)),
-            Quadruple(R.raw.ferret, ferret, "Ferret",MediaPlayer.create(this, R.raw.ferret_sound)),
-            Quadruple(R.raw.hippopotamus, hippopotamus, "Hippopotamus",MediaPlayer.create(this, R.raw.hippopotamus_sound)),
-            Quadruple(R.raw.horse, horse, "Horse",MediaPlayer.create(this, R.raw.horse_sound)),
-            Quadruple(R.raw.koala_bear, koala_bear, "Koala Bear",MediaPlayer.create(this, R.raw.koala_sound)),
-            Quadruple(R.raw.lion, lion, "Lion",MediaPlayer.create(this, R.raw.lion_sound)),
-            Quadruple(R.raw.reindeer, reindeer, "Reindeer",MediaPlayer.create(this, R.raw.deer_sound)),
-            Quadruple(R.raw.wolverine, wolverine, "Wolverine",MediaPlayer.create(this, R.raw.wolverine_sound))
+                Quadruple(R.raw.bear, bear, "Bear", MediaPlayer.create(this, R.raw.bear_sound)),
+                Quadruple(R.raw.cat, cat, "Cat", MediaPlayer.create(this, R.raw.cat_sound)),
+                Quadruple(R.raw.cow, cow, "Cow", MediaPlayer.create(this, R.raw.cow_sound)),
+                Quadruple(R.raw.dog, dog, "Dog", MediaPlayer.create(this, R.raw.dog_sound)),
+                Quadruple(R.raw.elephant, elephant, "Elephant", MediaPlayer.create(this, R.raw.elephant_sound)),
+                Quadruple(R.raw.ferret, ferret, "Ferret", MediaPlayer.create(this, R.raw.ferret_sound)),
+                Quadruple(R.raw.hippopotamus, hippopotamus, "Hippopotamus", MediaPlayer.create(this, R.raw.hippopotamus_sound)),
+                Quadruple(R.raw.horse, horse, "Horse", MediaPlayer.create(this, R.raw.horse_sound)),
+                Quadruple(R.raw.koala_bear, koala_bear, "Koala Bear", MediaPlayer.create(this, R.raw.koala_sound)),
+                Quadruple(R.raw.lion, lion, "Lion", MediaPlayer.create(this, R.raw.lion_sound)),
+                Quadruple(R.raw.reindeer, reindeer, "Reindeer", MediaPlayer.create(this, R.raw.deer_sound)),
+                Quadruple(R.raw.wolverine, wolverine, "Wolverine", MediaPlayer.create(this, R.raw.wolverine_sound))
         ).forEachIndexed { index, quadruple ->
             ModelRenderable
-                .builder()
-                .setSource(this, quadruple.first).build()
-                .thenAccept {
-                    val arObject = ARObject(quadruple.first, it, quadruple.second, quadruple.third,quadruple.fourth)
-                    arObject.view.setOnClickListener(this@ArActivity)
-                    arData[index] = arObject
-                }
-                .exceptionally {
-                    Toast.makeText(this@ArActivity, "Unable to load model ${quadruple.first}", Toast.LENGTH_LONG).show()
-                    null
-                }
+                    .builder()
+                    .setSource(this, quadruple.first).build()
+                    .thenAccept {
+                        val arObject = ARObject(quadruple.first, it, quadruple.second, quadruple.third, quadruple.fourth)
+                        arObject.view.setOnClickListener(this@ArActivity)
+                        arData[index] = arObject
+                    }
+                    .exceptionally {
+                        Toast.makeText(this@ArActivity, "Unable to load model ${quadruple.first}", Toast.LENGTH_LONG).show()
+                        null
+                    }
         }
     }
 }

@@ -25,6 +25,7 @@ class ListActivity : AppCompatActivity() {
     lateinit var listOfResources: Array<Int>
     lateinit var providers: List<AuthUI.IdpConfig>
     private val REQUEST_CODE: Int = 2
+    private lateinit var searchBar: com.mancj.materialsearchbar.MaterialSearchBar
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,9 +37,12 @@ class ListActivity : AppCompatActivity() {
                 AuthUI.IdpConfig.GoogleBuilder().build(),
                 AuthUI.IdpConfig.PhoneBuilder().build()
         )
+
         setupActionBar()
+        searchBar = findViewById(R.id.searchBar)
         searchBar.setHint("Search...")
-        searchBar.setSpeechMode(true)
+
+
 
         setupArray()
         val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listOfAnimals)
