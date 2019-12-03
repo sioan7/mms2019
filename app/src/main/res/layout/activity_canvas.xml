@@ -8,7 +8,7 @@
         tools:context=".CanvasActivity">
 
     <com.example.worldcanvas.CanvasView
-        android:id="@+id/canvasView"
+        android:id="@+id/canvas_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

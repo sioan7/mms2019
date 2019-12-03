@@ -8,7 +8,6 @@ import android.view.MotionEvent
 import android.view.WindowManager
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.graphics.scale
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 
 
 
@@ -17,7 +16,7 @@ class CanvasView
 @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null
-) : AppCompatImageView(context) {
+) : AppCompatImageView(context, attributeSet) {
 
     private val path = Path()
     val brush = Paint()
