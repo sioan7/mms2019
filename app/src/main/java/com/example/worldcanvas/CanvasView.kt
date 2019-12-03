@@ -10,16 +10,17 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.graphics.scale
 
 
+
+
 class CanvasView
 @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null
-) : AppCompatImageView(context) {
-
-    val color = Color.MAGENTA
+) : AppCompatImageView(context, attributeSet) {
 
     private val path = Path()
-    private val brush = Paint()
+    val brush = Paint()
+    private val INITIAL_COLOR = Color.CYAN
     private val pBackground = Paint()
     private val pText = Paint()
 
@@ -33,7 +34,7 @@ class CanvasView
 
     init {
         brush.isAntiAlias = true
-        brush.color = color
+        brush.color = INITIAL_COLOR
         brush.style = Paint.Style.STROKE
         brush.strokeJoin = Paint.Join.ROUND
         brush.strokeWidth = 8f
@@ -62,7 +63,7 @@ class CanvasView
         if (Color.valueOf(bmpImage.getPixel(x, y)).red() < .5) return false
         return when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                val floodFiller = QueueLinearFloodFiller(bmpImage, bmpImage.getPixel(x, y), Color.MAGENTA)
+                val floodFiller = QueueLinearFloodFiller(bmpImage, bmpImage.getPixel(x, y), brush.color)
                 floodFiller.setTolerance(10)
                 floodFiller.floodFill(x, y)
                 postInvalidate()
@@ -81,6 +82,8 @@ class CanvasView
              dm.heightPixels / 2 + bitmap.height * scalingFactor
          )
     }
+
+
 
 }
 
