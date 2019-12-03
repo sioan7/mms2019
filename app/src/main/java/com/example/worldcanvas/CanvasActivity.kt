@@ -15,7 +15,6 @@ class CanvasActivity : AppCompatActivity() {
     private var colorPicker: PickColorDialog? = null
     private var position: Int = 0
     private val usedColors = mutableListOf<Int>()
-    private val usedColorsCapacity = 3
 
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,9 +49,8 @@ class CanvasActivity : AppCompatActivity() {
         colorPicker?.hide()
         val color = (view.background as ColorDrawable).color
         canvas_view.brush.color = color
-        usedColors.add(color)
-        if (usedColors.size > usedColorsCapacity) {
-            usedColors.removeAt(0)
+        if (!usedColors.contains(color)) {
+            usedColors.add(color)
         }
     }
 

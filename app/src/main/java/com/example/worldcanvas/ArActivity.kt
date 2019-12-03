@@ -40,7 +40,6 @@ import kotlinx.android.synthetic.main.activity_ar.*
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
-import kotlin.collections.ArrayList
 
 data class ARObject(
         val resourceId: Int,
@@ -65,9 +64,8 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
     private var checker: Int = 0
 
     override fun onClick(view: View?) {
-        selected = arData.values.find { it.view.id == view!!.tag.toString().toInt() }?.resourceId
-                ?: 0
-        mySetBackground(view!!.id)
+        selected = view!!.tag.toString().toInt()
+        mySetBackground(view.id)
     }
 
     private fun mySetBackground(id: Int) {
