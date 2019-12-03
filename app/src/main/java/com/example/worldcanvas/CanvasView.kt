@@ -60,7 +60,10 @@ class CanvasView
         if (bmpImage.getPixel(x, y) == Color.valueOf(250f / 255f, 250f / 255f, 250f / 255f).toArgb()) return false
         if (bmpImage.getPixel(x, y) == Color.valueOf(244f / 255f, 244f / 255f, 244f / 255f).toArgb()) return false
         if (bmpImage.getPixel(x, y) == Color.BLACK) return false
-        if (Color.valueOf(bmpImage.getPixel(x, y)).red() < .1) return false
+        val avgColor = (Color.valueOf(bmpImage.getPixel(x, y))).let {
+            (it.red() + it.blue() + it.green()) / 3
+        }
+        if (avgColor < .1) return false
         return when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 val floodFiller = QueueLinearFloodFiller(bmpImage, bmpImage.getPixel(x, y), brush.color)
