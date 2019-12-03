@@ -4,6 +4,9 @@
     <string name="sign_out">SIGN OUT</string>
     <string name="go_to_canvas">To Canvas</string>
     <string name="go_to_scene">To Scene</string>
+    <string name="logout">Logout</string>
+    <string name="take_screenshot">Take Screenshot</string>
+    <string name="share">Share</string>
 
 
 </resources>

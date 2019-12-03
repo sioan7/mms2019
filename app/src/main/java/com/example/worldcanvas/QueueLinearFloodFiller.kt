@@ -10,7 +10,7 @@ class QueueLinearFloodFiller {
 
     var image: Bitmap? = null
         private set
-    var tolerance = intArrayOf(0, 0, 0)
+    private var tolerance = intArrayOf(0, 0, 0)
     private var width = 0
     private var height = 0
     private var pixels: IntArray? = null
@@ -33,11 +33,10 @@ class QueueLinearFloodFiller {
         setTargetColor(targetColor)
     }
 
-    fun setTargetColor(targetColor: Int) {
+    private fun setTargetColor(targetColor: Int) {
         startColor[0] = Color.red(targetColor)
         startColor[1] = Color.green(targetColor)
         startColor[2] = Color.blue(targetColor)
-
     }
 
     fun setTolerance(value: Int) {
@@ -60,7 +59,7 @@ class QueueLinearFloodFiller {
         image!!.getPixels(pixels, 0, width, 1, 1, width - 1, height - 1)
     }
 
-    fun useImage(img: Bitmap) {
+    private fun useImage(img: Bitmap) {
         // Use a pre-existing provided BufferedImage and write directly to it
         // cache data in member variables to decrease overhead of property calls
         width = img.width
@@ -72,7 +71,7 @@ class QueueLinearFloodFiller {
         image!!.getPixels(pixels, 0, width, 1, 1, width - 1, height - 1)
     }
 
-    protected fun prepare() {
+    private fun prepare() {
         // Called before starting flood-fill
         pixelsChecked = BooleanArray(pixels!!.size)
         ranges = LinkedList()
@@ -94,7 +93,7 @@ class QueueLinearFloodFiller {
         }
 
         // ***Do first call to floodfill.
-        LinearFill(x, y)
+        linearFill(x, y)
 
         // ***Call floodfill routine while floodfill ranges still exist on the
         // queue
@@ -115,17 +114,17 @@ class QueueLinearFloodFiller {
                 // if we're not above the top of the bitmap and the pixel above
                 // this one is within the color tolerance
                 if (range.Y > 0 && !pixelsChecked[upPxIdx]
-                    && CheckPixel(upPxIdx)
+                    && checkPixel(upPxIdx)
                 )
-                    LinearFill(i, upY)
+                    linearFill(i, upY)
 
                 // *Start Fill Downwards
                 // if we're not below the bottom of the bitmap and the pixel
                 // below this one is within the color tolerance
                 if (range.Y < height - 1 && !pixelsChecked[downPxIdx]
-                    && CheckPixel(downPxIdx)
+                    && checkPixel(downPxIdx)
                 )
-                    LinearFill(i, downY)
+                    linearFill(i, downY)
 
                 downPxIdx++
                 upPxIdx++
@@ -142,7 +141,7 @@ class QueueLinearFloodFiller {
     // to be processed in the main loop.
 
     // int x, int y: The starting coords
-    protected fun LinearFill(x: Int, y: Int) {
+    private fun linearFill(x: Int, y: Int) {
         // ***Find Left Edge of Color Area
         var lFillLoc = x // the location to check/fill on the left
         var pxIdx = width * y + x
@@ -159,7 +158,7 @@ class QueueLinearFloodFiller {
             pxIdx-- // de-increment pixel index
 
             // **exit loop if we're at edge of bitmap or color area
-            if (lFillLoc < 0 || pixelsChecked[pxIdx] || !CheckPixel(pxIdx)) {
+            if (lFillLoc < 0 || pixelsChecked[pxIdx] || !checkPixel(pxIdx)) {
                 break
             }
         }
@@ -183,7 +182,7 @@ class QueueLinearFloodFiller {
             pxIdx++ // increment pixel index
 
             // **exit loop if we're at edge of bitmap or color area
-            if (rFillLoc >= width || pixelsChecked[pxIdx] || !CheckPixel(pxIdx)) {
+            if (rFillLoc >= width || pixelsChecked[pxIdx] || !checkPixel(pxIdx)) {
                 break
             }
         }
@@ -197,7 +196,7 @@ class QueueLinearFloodFiller {
     }
 
     // Sees if a pixel is within the color tolerance range.
-    protected fun CheckPixel(px: Int): Boolean {
+    private fun checkPixel(px: Int): Boolean {
         val red = pixels!![px].ushr(16) and 0xff
         val green = pixels!![px].ushr(8) and 0xff
         val blue = pixels!![px] and 0xff
@@ -210,5 +209,5 @@ class QueueLinearFloodFiller {
     }
 
     // Represents a linear range to be filled and branched from.
-    protected inner class FloodFillRange(var startX: Int, var endX: Int, var Y: Int)
+    private inner class FloodFillRange(var startX: Int, var endX: Int, var Y: Int)
 }
