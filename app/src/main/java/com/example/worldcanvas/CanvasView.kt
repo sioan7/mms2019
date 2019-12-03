@@ -8,8 +8,7 @@ import android.view.MotionEvent
 import android.view.WindowManager
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.graphics.scale
-
-
+import java.util.*
 
 
 class CanvasView
@@ -20,7 +19,7 @@ class CanvasView
 
     private val path = Path()
     val brush = Paint()
-    private val INITIAL_COLOR = Color.CYAN
+    val INITIAL_COLOR = Color.CYAN
     private val pBackground = Paint()
     private val pText = Paint()
 

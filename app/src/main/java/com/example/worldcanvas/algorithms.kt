@@ -39,3 +39,11 @@ fun floodFill(image: Bitmap, target: Point, targetColor: Int, replacementColor: 
         } while (queue.isNotEmpty())
     }
 }
+
+fun createPattern(colors: List<Int>): Bitmap {
+    val bmp = Bitmap.createBitmap(1024, 1024, Bitmap.Config.ARGB_8888)
+    bmp.setHasAlpha(false)
+    bmp.isPremultiplied = true
+
+    return bmp
+}

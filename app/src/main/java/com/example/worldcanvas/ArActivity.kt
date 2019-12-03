@@ -40,6 +40,7 @@ import kotlinx.android.synthetic.main.activity_ar.*
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
+import kotlin.collections.ArrayList
 
 data class ARObject(
         val resourceId: Int,
@@ -57,6 +58,7 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
     private var btnSS: Button? = null
     private var btnshare: Button? = null
     private var sharePath = "no"
+    private var createdInitialObject = false
 
     private var arData = mutableMapOf<Int, ARObject>()
     private var selected: Int = 0
@@ -85,13 +87,12 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
 
         arFragment.arSceneView.scene.addOnUpdateListener(this@ArActivity)
 
-
-//        arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
-//            val anchor = hitResult.createAnchor()
-//            val anchorNode = AnchorNode(anchor)
-//            anchorNode.setParent(arFragment.arSceneView.scene)
-//            createModel(anchorNode, selected)
-//        }
+        arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
+            val anchor = hitResult.createAnchor()
+            val anchorNode = AnchorNode(anchor)
+            anchorNode.setParent(arFragment.arSceneView.scene)
+            createModel(anchorNode, selected)
+        }
 
         val builder = StrictMode.VmPolicy.Builder()
         StrictMode.setVmPolicy(builder.build())
@@ -236,23 +237,28 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
                         //iterate through all hits
                         val hitTestIterator = hitTest.iterator()
                         while (hitTestIterator.hasNext()) {
-                            val hitResult = hitTestIterator.next()
+                            if (!createdInitialObject) {
+                                val hitResult = hitTestIterator.next()
 
-                            //Create an anchor at the plane hit
-                            val modelAnchor = plane.createAnchor(hitResult.hitPose)
+                                //Create an anchor at the plane hit
+                                val modelAnchor = plane.createAnchor(hitResult.hitPose)
 
-                            //Attach a node to this anchor with the scene as the parent
-                            val anchorNode = AnchorNode(modelAnchor)
-                            anchorNode.setParent(arFragment.arSceneView.scene)
+                                //Attach a node to this anchor with the scene as the parent
+                                val anchorNode = AnchorNode(modelAnchor)
+                                anchorNode.setParent(arFragment.arSceneView.scene)
 
 
-                            val node = createModel(anchorNode, selected)
+                                val node = createModel(anchorNode, selected)
 
-                            //Alter the real world position to ensure object renders on the table top. Not somewhere inside.
-                            node.worldPosition = Vector3(modelAnchor.pose.tx(),
+                                //Alter the real world position to ensure object renders on the table top. Not somewhere inside.
+                                node.worldPosition = Vector3(
+                                    modelAnchor.pose.tx(),
                                     modelAnchor.pose.compose(Pose.makeTranslation(0f, 0.05f, 0f)).ty(),
-                                    modelAnchor.pose.tz())
-                            checker = 1
+                                    modelAnchor.pose.tz()
+                                )
+                                checker = 1
+                                createdInitialObject = true
+                            }
                         }
                     }
                 }
@@ -285,12 +291,8 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
             node.select()
             addName(anchorNode, node, arObject?.modelName.orEmpty())
         }
-        if (intent.hasExtra("COLOR")) {
-            val customColor = intent.getIntExtra("COLOR", Color.MAGENTA)
-            val bmp = Bitmap.createBitmap(2000, 2000, Bitmap.Config.ARGB_8888)
-            bmp.eraseColor(customColor)
-            bmp.setHasAlpha(false)
-            bmp.isPremultiplied = true
+        if (intent.hasExtra("COLORS")) {
+            val bmp = createPattern(intent.getIntegerArrayListExtra("COLORS") ?: listOf())
             Texture
                 .builder()
                 .setSource(bmp)
