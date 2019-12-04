@@ -291,9 +291,9 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
             addName(anchorNode, node, arObject?.modelName.orEmpty())
         }
         if (intent.hasExtra("COLORS") && intent.hasExtra("ANIMAL_IMAGE")) {
-//            val bmp = createPattern(intent.getIntegerArrayListExtra("COLORS") ?: listOf())
-            val byteArray = intent.getByteArrayExtra("ANIMAL_IMAGE")
-            val bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+            val bmp = createPattern(intent.getIntegerArrayListExtra("COLORS") ?: listOf())
+//            val byteArray = intent.getByteArrayExtra("ANIMAL_IMAGE")
+//            val bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
             Texture
                 .builder()
                 .setSource(bmp)
