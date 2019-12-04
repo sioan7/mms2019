@@ -3,6 +3,7 @@ package com.example.worldcanvas
 import android.Manifest
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.MediaPlayer
 import android.net.Uri
@@ -289,8 +290,10 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
             node.select()
             addName(anchorNode, node, arObject?.modelName.orEmpty())
         }
-        if (intent.hasExtra("COLORS")) {
-            val bmp = createPattern(intent.getIntegerArrayListExtra("COLORS") ?: listOf())
+        if (intent.hasExtra("COLORS") && intent.hasExtra("ANIMAL_IMAGE")) {
+//            val bmp = createPattern(intent.getIntegerArrayListExtra("COLORS") ?: listOf())
+            val byteArray = intent.getByteArrayExtra("ANIMAL_IMAGE")
+            val bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
             Texture
                 .builder()
                 .setSource(bmp)

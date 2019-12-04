@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_canvas.*
+import android.graphics.Bitmap
+import java.io.ByteArrayOutputStream
 
 
 class CanvasActivity : AppCompatActivity() {
@@ -37,6 +39,10 @@ class CanvasActivity : AppCompatActivity() {
         intent.putIntegerArrayListExtra("COLORS", ArrayList(usedColors))
         intent.putExtra("Object", element)
         intent.putExtra("Position", position)
+        val stream = ByteArrayOutputStream()
+        canvas_view.bmpImage.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        val byteArray = stream.toByteArray()
+        intent.putExtra("ANIMAL_IMAGE", byteArray)
         startActivity(intent)
     }
 

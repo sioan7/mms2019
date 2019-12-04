@@ -26,7 +26,7 @@ class CanvasView
     private val dm = DisplayMetrics()
     private val wm: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
-    private var bmpImage: Bitmap = BitmapFactory
+    var bmpImage: Bitmap = BitmapFactory
         .decodeResource(resources, context.getSharedPreferences("PREFERENCE_NAME",Context.MODE_PRIVATE).getInt("Canvas",0))
         .copy(Bitmap.Config.ARGB_8888, true)
     private var imagePosition: RectF
