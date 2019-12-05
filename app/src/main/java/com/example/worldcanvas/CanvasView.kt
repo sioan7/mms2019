@@ -9,7 +9,6 @@ import android.view.MotionEvent
 import android.view.WindowManager
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.graphics.scale
-import java.util.*
 
 
 class CanvasView
