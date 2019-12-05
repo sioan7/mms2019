@@ -13,8 +13,9 @@ import java.io.ByteArrayOutputStream
 
 class CanvasActivity : AppCompatActivity() {
 
-    private var element: Int = 0
-    private var colorPicker: PickColorDialog? = null
+    var element: Int = 0
+    var model: Int = 0
+    var colorPicker: PickColorDialog? = null
     private var position: Int = 0
     private val usedColors = mutableListOf<Int>()
 
@@ -22,10 +23,12 @@ class CanvasActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         element = intent.getIntExtra("Canvas", 0)
+        model = intent.getIntExtra("Model", 0)
         position = intent.getIntExtra("Position", 0)
         val sharedPreference = getSharedPreferences("PREFERENCE_NAME", Context.MODE_PRIVATE)
         val editor = sharedPreference.edit()
         editor.putInt("Canvas", element)
+        editor.putInt("Model", model)
         editor.apply()
 
         colorPicker = PickColorDialog(this)
