@@ -19,32 +19,6 @@ class PickColorDialog
 ): Dialog(context){
 
     override fun onCreate(savedInstanceState: Bundle?) {
-//        return activity?.let {
-//            // Use the Builder class for convenient dialog construction
-//            val builder = AlertDialog.Builder(it)
-//            builder.setMessage("Fire missels?")
-//                .setPositiveButton("Fire",
-//                    DialogInterface.OnClickListener { dialog, id ->
-//                        // FIRE ZE MISSILES!
-//                    })
-//                .setNegativeButton("Cancel",
-//                    DialogInterface.OnClickListener { dialog, id ->
-//                        // User cancelled the dialog
-//                    })
-//            // Create the AlertDialog object and return it
-//            builder.create()
-//        } ?: throw IllegalStateException("Activity cannot be null")
-
-//        val id = R.id.color_picker_dialog
-//        val lay = R.layout.color_picker_dialog
-//
-//        val cpDialog = findViewById<FlexboxLayout>(id)
-//
-//        for (colorButton in cpDialog.children) {
-//            colorButton.setOnClickListener {
-//                (context as CanvasActivity).changeColor(colorButton.id)
-//            }
-//        }
         setContentView(R.layout.color_picker_dialog)
     }
 }

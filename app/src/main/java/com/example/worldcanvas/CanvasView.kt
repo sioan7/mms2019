@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.MotionEvent
 import android.view.WindowManager
 import androidx.appcompat.widget.AppCompatImageView
@@ -20,7 +21,9 @@ class CanvasView
 
     private val path = Path()
     val brush = Paint()
-    private val INITIAL_COLOR = Color.CYAN
+    private val INITIAL_COLOR = Color.WHITE
+    private val NEUTRAL_WHITE = Color.valueOf(250f / 255f, 250f / 255f, 250f / 255f).toArgb()
+    private val NEUTRAL_WHITE2 = Color.valueOf(244f / 255f, 244f / 255f, 244f / 255f).toArgb()
     private val pBackground = Paint()
     private val pText = Paint()
 
@@ -30,7 +33,11 @@ class CanvasView
     private var bmpImage: Bitmap = BitmapFactory
         .decodeResource(resources, context.getSharedPreferences("PREFERENCE_NAME",Context.MODE_PRIVATE).getInt("Canvas",0))
         .copy(Bitmap.Config.ARGB_8888, true)
+    private var bmpModel: Bitmap = BitmapFactory
+        .decodeResource(resources, context.getSharedPreferences("PREFERENCE_NAME",Context.MODE_PRIVATE).getInt("Model",0))
+        .copy(Bitmap.Config.ARGB_8888, true)
     private var imagePosition: RectF
+    private var modelPosition: RectF
 
     init {
         brush.isAntiAlias = true
@@ -42,23 +49,51 @@ class CanvasView
         wm.defaultDisplay.getMetrics(dm)
 
         imagePosition = centerBitmapViewport(bmpImage, dm)
+        modelPosition = topRightModelViewport(bmpImage, dm)
+
         bmpImage = bmpImage.scale(
             (imagePosition.right - imagePosition.left).toInt(),
             (imagePosition.bottom - imagePosition.top).toInt()
         )
+
+        bmpModel = bmpModel.scale(
+            (modelPosition.right - modelPosition.left).toInt(),
+            (modelPosition.bottom - modelPosition.top).toInt()
+        )
+
+
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+        canvas.drawBitmap(bmpModel, null, modelPosition, brush)
         canvas.drawBitmap(bmpImage, null, imagePosition, brush)
+
+//        var total = 0
+//        var dif = 0
+//        for (i in 0 until bmpModel.width){
+//            for (j in 0 until bmpModel.height) {
+//                val colorM = bmpModel.getPixel(i, j)
+//                val colorI = bmpImage.getPixel(i, j)
+//
+//                if(colorM == NEUTRAL_WHITE || colorM == NEUTRAL_WHITE2 || colorM == Color.BLACK)
+//                    continue
+//
+//                if(colorM != colorI){
+//                    dif++
+//                }
+//                total++
+//            }
+//        }
+//        Log.d("DEBUG","($dif, $total)")
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val x = (event.x - imagePosition.left).toInt()
         val y = (event.y - imagePosition.top).toInt()
         if (x < 0 || x >= bmpImage.width || y < 0 || y >= bmpImage.height) return false
-        if (bmpImage.getPixel(x, y) == Color.valueOf(250f / 255f, 250f / 255f, 250f / 255f).toArgb()) return false
-        if (bmpImage.getPixel(x, y) == Color.valueOf(244f / 255f, 244f / 255f, 244f / 255f).toArgb()) return false
+        if (bmpImage.getPixel(x, y) == NEUTRAL_WHITE) return false
+        if (bmpImage.getPixel(x, y) == NEUTRAL_WHITE2) return false
         if (bmpImage.getPixel(x, y) == Color.BLACK) return false
         val avgColor = (Color.valueOf(bmpImage.getPixel(x, y))).let {
             (it.red() + it.blue() + it.green()) / 3
@@ -84,6 +119,17 @@ class CanvasView
              dm.widthPixels - threshold,
              dm.heightPixels / 2 + bitmap.height * scalingFactor
          )
+    }
+
+    private fun topRightModelViewport(bitmap: Bitmap, dm: DisplayMetrics, threshold: Float = 20f): RectF {
+        val scalingFactor = 300f / bitmap.height / 2f
+
+        return RectF(
+            dm.widthPixels / 2 - bitmap.width * scalingFactor,
+            threshold,
+            dm.widthPixels / 2 + bitmap.width * scalingFactor,
+            threshold + 300f
+        )
     }
 
 

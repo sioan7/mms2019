@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.activity_canvas.*
 class CanvasActivity : AppCompatActivity() {
 
     var element: Int = 0
+    var model: Int = 0
     var colorPicker: PickColorDialog? = null
     private var position: Int = 0
     var currentColor = 0xf53703
@@ -23,10 +24,12 @@ class CanvasActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         element = intent.getIntExtra("Canvas", 0)
+        model = intent.getIntExtra("Model", 0)
         position = intent.getIntExtra("Position", 0)
         val sharedPreference = getSharedPreferences("PREFERENCE_NAME", Context.MODE_PRIVATE)
         var editor = sharedPreference.edit()
         editor.putInt("Canvas", element)
+        editor.putInt("Model", model)
         editor.apply()
 
         colorPicker = PickColorDialog(this)

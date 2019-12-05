@@ -23,6 +23,7 @@ class ListActivity : AppCompatActivity() {
 
     lateinit var listOfAnimals: Array<String>
     lateinit var listOfResources: Array<Int>
+    lateinit var listOfModels: Array<Int>
     lateinit var providers: List<AuthUI.IdpConfig>
     private val REQUEST_CODE: Int = 2
     private lateinit var searchBar: com.mancj.materialsearchbar.MaterialSearchBar
@@ -106,8 +107,8 @@ class ListActivity : AppCompatActivity() {
 
     private fun goToCanvas( position: Int) {
         val intent = Intent(this, CanvasActivity::class.java)
-        val elementClicked = listOfResources[position]
-        intent.putExtra("Canvas",elementClicked)
+        intent.putExtra("Canvas",listOfResources[position])
+        intent.putExtra("Model",listOfModels[position])
         intent.putExtra("Position", position)
         startActivity(intent)
     }
@@ -139,18 +140,33 @@ class ListActivity : AppCompatActivity() {
         )
 
         listOfResources = arrayOf(
-                R.raw.bear_image,
-                R.raw.cat_image,
-                R.raw.cow_image,
-                R.raw.dog_image,
-                R.raw.elephant_image,
-                R.raw.ferret_image,
-                R.raw.hippopotamus_image,
-                R.raw.horse_image,
-                R.raw.koala_bear_image,
-                R.raw.lion_bmp,
-                R.raw.reindeer_image,
-                R.raw.wolverine_image
+            R.raw.bear_image,
+            R.raw.cat_image,
+            R.raw.cow_image,
+            R.raw.dog_image,
+            R.raw.elephant_image,
+            R.raw.ferret_image,
+            R.raw.hippopotamus_image,
+            R.raw.horse_image,
+            R.raw.koala_bear_image,
+            R.raw.lion_bmp,
+            R.raw.reindeer_image,
+            R.raw.wolverine_image
+        )
+
+        listOfModels = arrayOf(
+            R.raw.bear_image_c,
+            R.raw.cat_image_c,
+            R.raw.cow_image_c,
+            R.raw.dog_image_c,
+            R.raw.elephant_image,
+            R.raw.ferret_image,
+            R.raw.hippopotamus_image,
+            R.raw.horse_image,
+            R.raw.koala_bear_image,
+            R.raw.lion_bmp,
+            R.raw.reindeer_image,
+            R.raw.wolverine_image
         )
     }
 
