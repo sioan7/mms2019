@@ -5,11 +5,11 @@
     android:layout_height="match_parent"
     tools:context=".CanvasActivity">
 
+
     <com.example.worldcanvas.CanvasView
         android:id="@+id/canvas_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
 
     <Button
         android:id="@+id/button"
@@ -39,6 +39,32 @@
         android:text="@string/color_picker"
         android:textColor="#00b200"
         />
+
+<!--    <Button-->
+<!--        android:id="@+id/progress_button"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentStart="true"-->
+<!--        android:layout_alignParentEnd="true"-->
+<!--        android:layout_marginStart="150dp"-->
+<!--        android:layout_marginTop="350px"-->
+<!--        android:layout_marginEnd="150dp"-->
+<!--        android:background="@drawable/button_style"-->
+<!--        android:onClick="setProgress"-->
+<!--        android:padding="3dp"-->
+<!--        android:text="@string/progress"-->
+<!--        android:textColor="#00b200" />-->
+
+    <TextView
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="70dp"
+        android:text="@string/initial_progress"
+        android:textColor="@color/colorPrimary"
+        android:textSize="32sp" />
 
 
 </RelativeLayout>

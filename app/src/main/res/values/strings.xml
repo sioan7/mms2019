@@ -11,6 +11,8 @@
     <string name="ar">AR</string>
     <string name="color">Color</string>
     <string name="color_picker">Color picker</string>
+    <string name="progress">Progress</string>
+    <string name="initial_progress">Let\'s paint</string>
 
 
 </resources>

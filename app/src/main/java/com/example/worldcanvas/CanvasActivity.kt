@@ -9,6 +9,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_canvas.*
 import java.io.ByteArrayOutputStream
+import kotlin.math.roundToInt
 
 
 class CanvasActivity : AppCompatActivity() {
@@ -18,6 +19,7 @@ class CanvasActivity : AppCompatActivity() {
     var colorPicker: PickColorDialog? = null
     private var position: Int = 0
     private val usedColors = mutableListOf<Int>()
+    private var progressValue = 0
 
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,6 +82,22 @@ class CanvasActivity : AppCompatActivity() {
         if (!usedColors.contains(color)) {
             usedColors.add(color)
         }
+    }
+
+    fun setProgress(view: View) {
+        val percentage = canvas_view.calculateProgress().roundToInt()
+
+        progress.text = when{
+            progressValue >= percentage -> "It's wrong! Try again."
+            percentage < 10 -> "Let's paint!"
+            percentage >= 90 -> "Perfect!"
+            else -> "Great! Keep going."
+        }
+
+
+
+        progressValue = percentage
+
     }
 
 }

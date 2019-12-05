@@ -56,8 +56,8 @@ class CanvasView
         )
 
         bmpModel = bmpModel.scale(
-            (modelPosition.right - modelPosition.left).toInt(),
-            (modelPosition.bottom - modelPosition.top).toInt()
+            (imagePosition.right - imagePosition.left).toInt(),
+            (imagePosition.bottom - imagePosition.top).toInt()
         )
 
 
@@ -68,6 +68,7 @@ class CanvasView
         canvas.drawBitmap(bmpModel, null, modelPosition, brush)
         canvas.drawBitmap(bmpImage, null, imagePosition, brush)
 
+        (context as CanvasActivity).setProgress(this)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -114,7 +115,32 @@ class CanvasView
         )
     }
 
+    fun calculateProgress(): Float{
 
+
+        var total = 0
+        var dif = 0
+        for (i in 0 until bmpModel.width){
+            for (j in 0 until bmpModel.height) {
+                val colorM = bmpModel.getPixel(i, j)
+                val colorI = bmpImage.getPixel(i, j)
+
+                if(colorM == NEUTRAL_WHITE
+                    || colorM == NEUTRAL_WHITE2
+                    || colorM == Color.BLACK
+                    || colorM == Color.TRANSPARENT)
+                    continue
+
+                if(colorM != colorI){
+                    dif++
+                }
+                total++
+            }
+        }
+        Log.d("DEBUG","($dif, $total)")
+
+        return 100f*(total-dif)/total
+    }
 
 }
 
