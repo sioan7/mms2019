@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun goToCanvas(view: View) {
-        val intent = Intent(this, CanvasActivity::class.java)
+        val intent = Intent(this, ListActivity::class.java)
         startActivity(intent)
     }
 

@@ -7,40 +7,42 @@
     tools:context=".MainActivity">
 
     <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center|center_horizontal"
-            android:orientation="vertical"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center|center_horizontal"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <Button
-                android:id="@+id/go_to_canvas"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/go_to_canvas"
-                android:onClick="goToCanvas" />
+            android:id="@+id/go_to_canvas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_style"
+            android:onClick="goToCanvas"
+            android:text="@string/go_to_canvas" />
 
         <Space
-                android:layout_width="match_parent"
-                android:layout_height="75dp" />
+            android:layout_width="match_parent"
+            android:layout_height="75dp" />
 
         <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Hello World!"/>
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="" />
 
         <Space
-                android:layout_width="match_parent"
-                android:layout_height="75dp" />
+            android:layout_width="match_parent"
+            android:layout_height="75dp" />
 
         <Button
-                android:id="@+id/go_to_scene"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/go_to_scene"
-                android:onClick="goToScene" />
+            android:id="@+id/go_to_scene"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_style"
+            android:onClick="goToScene"
+            android:text="@string/go_to_scene" />
 
     </LinearLayout>
 

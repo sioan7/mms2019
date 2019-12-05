@@ -113,6 +113,11 @@ class ListActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+    }
+
     private fun goToCanvas(position: Int) {
         val intent = Intent(this, CanvasActivity::class.java)
         intent.putExtra("Canvas",listOfResources[position])
