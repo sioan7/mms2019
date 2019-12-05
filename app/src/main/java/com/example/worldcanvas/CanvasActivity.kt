@@ -77,6 +77,7 @@ class CanvasActivity : AppCompatActivity() {
         colorPicker?.hide()
         val color = (view.background as ColorDrawable).color
         canvas_view.brush.color = color
+
         if (!usedColors.contains(color)) {
             usedColors.add(color)
         }

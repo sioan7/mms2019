@@ -22,7 +22,7 @@
         android:layout_marginEnd="10dp"
         android:background="@drawable/button_style"
         android:text="@string/ar"
-        android:textColor="#00b200"
+        android:textColor="#ffffff"
         />
 
     <Button
@@ -37,7 +37,7 @@
         android:onClick="pickColor"
         android:padding="3dp"
         android:text="@string/color_picker"
-        android:textColor="#00b200"
+        android:textColor="#ffffff"
         />
 
 

@@ -1,13 +1,17 @@
 package com.example.worldcanvas
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.MediaPlayer
 import android.net.Uri
-import android.os.*
+import android.os.Bundle
+import android.os.Handler
+import android.os.HandlerThread
+import android.os.StrictMode
 import android.provider.MediaStore
 import android.util.Log
 import android.view.PixelCopy
@@ -63,7 +67,7 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
     private var arData = mutableMapOf<Int, ARObject>()
     private var selected: Int = 0
     private var checker: Int = 0
-
+    private lateinit var context:Context
     override fun onClick(view: View?) {
         selected = view!!.tag.toString().toInt()
         mySetBackground(view.id)
@@ -84,6 +88,7 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ar)
         setupARData()
+        context = applicationContext
         //selected = intent.getIntExtra("Position",0)
         mediaPlayer = MediaPlayer.create(this, R.raw.grizzlybearroar)
         selected = intent.getIntExtra("Position", 0)
@@ -109,13 +114,15 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
 
         btnSS!!.setOnClickListener {
             takePhoto(arFragment)
+            Toast.makeText(applicationContext, "Screenshot was taken and saved in your gallery", Toast.LENGTH_LONG)
+                    .show()
+            Thread.sleep(500)
         }
 
 
         btnshare!!.setOnClickListener {
-            if (sharePath != "no") {
                 share(sharePath)
-            }
+
         }
 
 
@@ -141,7 +148,7 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
                 if (copyResult == PixelCopy.SUCCESS) {
                     try {
                         // image naming and path  to include sd card  appending name you choose for file
-                        val mPath = Environment.getExternalStorageDirectory().toString() + "/" + now + ".jpeg"
+                        val mPath = context.getExternalFilesDir(null)!!.absolutePath + ".jpeg"
 
 
                         val imageFile = File(mPath)
@@ -156,8 +163,8 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
                         val filePath = imageFile.path
 
                         sharePath = filePath
-                        Toast.makeText(applicationContext, "Screenshot was taken and saved in your gallery", Toast.LENGTH_LONG)
-                                .show()
+
+
                         MediaStore.Images.Media.insertImage(contentResolver, filePath, imageFile.name, imageFile.name)
 
                     } catch (e: Throwable) {
@@ -166,6 +173,8 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
                     }
                 }
                 handlerThread.quitSafely()
+
+
 
             }
         }, Handler(handlerThread.looper))

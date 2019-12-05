@@ -120,7 +120,7 @@
         android:background="@drawable/button_style"
         android:padding="5dp"
         android:text="@string/animal_screenshot"
-        android:textColor="#00b200"/>
+        android:textColor="#ffffff"/>
 
 
 
@@ -134,7 +134,7 @@
         android:layout_marginBottom="10dp"
         android:background= "@drawable/button_style"
         android:text="@string/share"
-        android:textColor="#00b200"/>
+        android:textColor="#ffffff"/>
 
 
 </FrameLayout>
