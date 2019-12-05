@@ -9,7 +9,6 @@ import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -21,7 +20,7 @@ import kotlinx.android.synthetic.main.activity_list.*
 
 class ListActivity : AppCompatActivity() {
 
-    lateinit var listOfAnimals: Array<String>
+    lateinit var listOfAnimals: ArrayList<String>
     lateinit var listOfResources: Array<Int>
     lateinit var providers: List<AuthUI.IdpConfig>
     private val REQUEST_CODE: Int = 2
@@ -45,7 +44,11 @@ class ListActivity : AppCompatActivity() {
 
 
         setupArray()
-        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listOfAnimals)
+        val mapNamesToImages = LinkedHashMap<String, Int>()
+        for (i in 0 until listOfAnimals.size) {
+            mapNamesToImages[listOfAnimals[i]] = listOfResources[i]
+        }
+        val adapter = CustomAdapter(this, listOfAnimals, mapNamesToImages)
         mListView.adapter = adapter
 
         searchBar.addTextChangeListener(object : TextWatcher {
@@ -57,10 +60,15 @@ class ListActivity : AppCompatActivity() {
 
             override fun onTextChanged(charSequence: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 adapter.filter.filter(charSequence)
+
             }
         })
 
-        mListView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ -> goToCanvas(position) }
+        mListView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
+            val item = adapter.getItem(position)
+            val positionAnimals = listOfAnimals.indexOf(item)
+            goToCanvas(positionAnimals)
+        }
     }
 
 
@@ -104,10 +112,10 @@ class ListActivity : AppCompatActivity() {
         }
     }
 
-    private fun goToCanvas( position: Int) {
+    private fun goToCanvas(position: Int) {
         val intent = Intent(this, CanvasActivity::class.java)
         val elementClicked = listOfResources[position]
-        intent.putExtra("Canvas",elementClicked)
+        intent.putExtra("Canvas", elementClicked)
         intent.putExtra("Position", position)
         startActivity(intent)
     }
@@ -123,7 +131,7 @@ class ListActivity : AppCompatActivity() {
 
 
     private fun setupArray() {
-        listOfAnimals = arrayOf(
+        listOfAnimals = arrayListOf(
                 "Bear",
                 "Cat",
                 "Cow",
@@ -153,6 +161,9 @@ class ListActivity : AppCompatActivity() {
                 R.raw.wolverine_image
         )
     }
+
+
+
 
 
 }
