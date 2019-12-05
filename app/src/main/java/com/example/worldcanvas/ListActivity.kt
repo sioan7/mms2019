@@ -48,7 +48,7 @@ class ListActivity : AppCompatActivity() {
         for (i in 0 until listOfAnimals.size) {
             mapNamesToImages[listOfAnimals[i]] = listOfResources[i]
         }
-        val adapter = MyListAdapter(this, listOfAnimals, mapNamesToImages)
+        val adapter = CustomAdapter(this, listOfAnimals, mapNamesToImages)
         mListView.adapter = adapter
 
         searchBar.addTextChangeListener(object : TextWatcher {
@@ -65,9 +65,9 @@ class ListActivity : AppCompatActivity() {
         })
 
         mListView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
-            val item = adapter.getItem(position);
+            val item = adapter.getItem(position)
             val positionAnimals = listOfAnimals.indexOf(item)
-            searchBar.text=""
+            searchBar.text = ""
             goToCanvas(positionAnimals)
         }
     }
