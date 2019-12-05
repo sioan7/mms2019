@@ -7,6 +7,10 @@
     <string name="logout">Logout</string>
     <string name="take_screenshot">Take Screenshot</string>
     <string name="share">Share</string>
+    <string name="animal_screenshot">ANIMAL SCREENSHOT</string>
+    <string name="ar">AR</string>
+    <string name="color">Color</string>
+    <string name="color_picker">Color picker</string>
 
 
 </resources>

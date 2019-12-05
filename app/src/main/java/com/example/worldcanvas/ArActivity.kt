@@ -3,7 +3,6 @@ package com.example.worldcanvas
 import android.Manifest
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.MediaPlayer
 import android.net.Uri
@@ -69,6 +68,11 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
         mySetBackground(view.id)
     }
 
+    override fun onBackPressed() {
+        val intent = Intent(this, ListActivity::class.java)
+        startActivity(intent)
+    }
+
     private fun mySetBackground(id: Int) {
         arData.values.forEach { value ->
             value.view.setBackgroundColor(if (id == value.view.id) Color.parseColor("#80333639") else Color.TRANSPARENT)
@@ -102,7 +106,10 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
         btnshare = findViewById(R.id.btnShare)
 
 
-        btnSS!!.setOnClickListener { takePhoto(arFragment) }
+        btnSS!!.setOnClickListener {
+            takePhoto(arFragment)
+        }
+
 
         btnshare!!.setOnClickListener {
             if (sharePath != "no") {
@@ -148,7 +155,7 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
                         val filePath = imageFile.path
 
                         sharePath = filePath
-                        Toast.makeText(applicationContext, "Screenshot was taken and saved in your gallery", Toast.LENGTH_SHORT)
+                        Toast.makeText(applicationContext, "Screenshot was taken and saved in your gallery", Toast.LENGTH_LONG)
                                 .show()
                         MediaStore.Images.Media.insertImage(contentResolver, filePath, imageFile.name, imageFile.name)
 

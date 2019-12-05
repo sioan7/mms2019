@@ -67,7 +67,6 @@ class ListActivity : AppCompatActivity() {
         mListView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             val item = adapter.getItem(position)
             val positionAnimals = listOfAnimals.indexOf(item)
-            searchBar.text = ""
             goToCanvas(positionAnimals)
         }
     }
@@ -162,6 +161,9 @@ class ListActivity : AppCompatActivity() {
                 R.raw.wolverine_image
         )
     }
+
+
+
 
 
 }

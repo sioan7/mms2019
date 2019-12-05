@@ -2,12 +2,12 @@ package com.example.worldcanvas
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_canvas.*
-import android.graphics.Bitmap
 import java.io.ByteArrayOutputStream
 
 
@@ -31,6 +31,11 @@ class CanvasActivity : AppCompatActivity() {
         colorPicker = PickColorDialog(this)
         setContentView(R.layout.activity_canvas)
         usedColors.add(canvas_view.INITIAL_COLOR)
+    }
+
+    override fun onBackPressed() {
+        val intent = Intent(this, ListActivity::class.java)
+        startActivity(intent)
     }
 
 

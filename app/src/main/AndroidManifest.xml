@@ -29,10 +29,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CanvasActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".ArActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".MainActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".ListActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".CanvasActivity" android:noHistory="true" android:screenOrientation="portrait"/>
+        <activity android:name=".ArActivity" android:noHistory="true" android:screenOrientation="portrait"/>
+        <activity android:name=".MainActivity" android:noHistory="true" android:screenOrientation="portrait"/>
+        <activity android:name=".ListActivity" android:noHistory="true" android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
