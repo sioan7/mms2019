@@ -27,8 +27,10 @@
 
     <ListView
         android:id="@+id/mListView"
+        android:listSelector="@drawable/list_view_selector"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
 
 
 </LinearLayout>
