@@ -114,7 +114,7 @@ class CanvasView
         )
     }
 
-    fun calculateProgress(): Float{
+    suspend fun calculateProgress(): Float{
 
 
         var total = 0

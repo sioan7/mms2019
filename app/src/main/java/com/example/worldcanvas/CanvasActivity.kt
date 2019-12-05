@@ -8,6 +8,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_canvas.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import kotlin.math.roundToInt
 
@@ -96,19 +100,20 @@ class CanvasActivity : AppCompatActivity() {
     }
 
     fun setProgress(view: View) {
-        val percentage = canvas_view.calculateProgress().roundToInt()
+        GlobalScope.launch(context = Dispatchers.Main.immediate) {
+            val percentage =
+                withContext(Dispatchers.Default) { canvas_view.calculateProgress() }
+                .roundToInt()
 
-        progress.text = when{
-            progressValue >= percentage -> "It's wrong! Try again."
-            percentage < 10 -> "Let's paint!"
-            percentage >= 90 -> "Perfect!"
-            else -> "Great! Keep going."
+            progress.text = when {
+                progressValue >= percentage -> "It's wrong! Try again."
+                percentage < 10 -> "Let's paint!"
+                percentage >= 90 -> "Perfect!"
+                else -> "Great! Keep going."
+            }
+
+            progressValue = percentage
         }
-
-
-
-        progressValue = percentage
-
     }
 
 }
