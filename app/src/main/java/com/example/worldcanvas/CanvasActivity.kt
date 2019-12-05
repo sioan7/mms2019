@@ -38,10 +38,24 @@ class CanvasActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-
     fun goToAR(view: View) {
         val intent = Intent(this, ArActivity::class.java)
+        intent.putExtra("Object", element)
+        intent.putExtra("Position", position)
+        startActivity(intent)
+    }
+
+
+    fun goToARWithColors(view: View) {
+        val intent = Intent(this, ArActivity::class.java)
         intent.putIntegerArrayListExtra("COLORS", ArrayList(usedColors))
+        intent.putExtra("Object", element)
+        intent.putExtra("Position", position)
+        startActivity(intent)
+    }
+
+    fun goToARWithBitmap(view: View) {
+        val intent = Intent(this, ArActivity::class.java)
         intent.putExtra("Object", element)
         intent.putExtra("Position", position)
         val stream = ByteArrayOutputStream()
