@@ -45,10 +45,20 @@ class CanvasActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-
-    fun goToARWithColors(view: View) {
+    fun goToARWithPattern1(view: View) {
         val intent = Intent(this, ArActivity::class.java)
         intent.putIntegerArrayListExtra("COLORS", ArrayList(usedColors))
+        intent.putExtra("PATTERN1", true)
+        intent.putExtra("Object", element)
+        intent.putExtra("Position", position)
+        startActivity(intent)
+    }
+
+
+    fun goToARWithPattern2(view: View) {
+        val intent = Intent(this, ArActivity::class.java)
+        intent.putIntegerArrayListExtra("COLORS", ArrayList(usedColors))
+        intent.putExtra("PATTERN2", true)
         intent.putExtra("Object", element)
         intent.putExtra("Position", position)
         startActivity(intent)

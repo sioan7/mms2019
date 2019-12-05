@@ -40,5 +40,37 @@
         android:textColor="#00b200"
         />
 
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_alignParentBottom="true"
+        android:onClick="goToARWithPattern1"
+        android:background="@drawable/button_style"
+        android:textColor="#00b200"
+        android:text="□" />
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="goToARWithBitmap"
+        android:background="@drawable/button_style"
+        android:textColor="#00b200"
+        android:text="⌘" />
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="goToARWithPattern2"
+        android:background="@drawable/button_style"
+        android:textColor="#00b200"
+        android:text="℧" />
+
 
 </RelativeLayout>

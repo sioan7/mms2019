@@ -16,7 +16,6 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.ar.core.Frame
 import com.google.ar.core.Plane
 import com.google.ar.core.Pose
 import com.google.ar.core.TrackingState
@@ -95,7 +94,7 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
             val anchor = hitResult.createAnchor()
             val anchorNode = AnchorNode(anchor)
             anchorNode.setParent(arFragment.arSceneView.scene)
-            createModel(anchorNode, selected)
+            createModel(anchorNode)
         }
 
         val builder = StrictMode.VmPolicy.Builder()
@@ -216,80 +215,69 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
     }
 
     override fun onUpdate(p0: FrameTime?) {
-        //get the frame from the scene for shorthand
-        val frame = arFragment.arSceneView.arFrame
-        //val arObject = arData[selected]
-
-        if (frame != null && checker == 0) {
-            //get the trackables to ensure planes are detected
-            val var3 = frame.getUpdatedTrackables(Plane::class.java).iterator()
-            while (var3.hasNext()) {
-                val plane = var3.next() as Plane
-
-                //If a plane has been detected & is being tracked by ARCore
-                if (plane.trackingState == TrackingState.TRACKING) {
-
-                    //Hide the plane discovery helper animation
-                    arFragment.planeDiscoveryController.hide()
-
-
-                    //Get all added anchors to the frame
-                    val iterableAnchor = frame.updatedAnchors.iterator()
-
-                    //place the first object only if no previous anchors were added
-                    if (!iterableAnchor.hasNext()) {
-                        //Perform a hit test at the center of the screen to place an object without tapping
-                        val hitTest = frame.hitTest(frame.screenCenter().x, frame.screenCenter().y)
-
-                        //iterate through all hits
-                        val hitTestIterator = hitTest.iterator()
-                        while (hitTestIterator.hasNext()) {
-                            if (!createdInitialObject) {
-                                val hitResult = hitTestIterator.next()
-
-                                //Create an anchor at the plane hit
-                                val modelAnchor = plane.createAnchor(hitResult.hitPose)
-
-                                //Attach a node to this anchor with the scene as the parent
-                                val anchorNode = AnchorNode(modelAnchor)
-                                anchorNode.setParent(arFragment.arSceneView.scene)
-
-
-                                val node = createModel(anchorNode, selected)
-
-                                //Alter the real world position to ensure object renders on the table top. Not somewhere inside.
-                                node.worldPosition = Vector3(
-                                    modelAnchor.pose.tx(),
-                                    modelAnchor.pose.compose(Pose.makeTranslation(0f, 0.05f, 0f)).ty(),
-                                    modelAnchor.pose.tz()
-                                )
-                                checker = 1
-                                createdInitialObject = true
-                            }
-                        }
-                    }
-                }
-            }
-        }
+//        //get the frame from the scene for shorthand
+//        val frame = arFragment.arSceneView.arFrame
+//        //val arObject = arData[selected]
+//
+//        if (frame != null && checker == 0) {
+//            //get the trackables to ensure planes are detected
+//            val var3 = frame.getUpdatedTrackables(Plane::class.java).iterator()
+//            while (var3.hasNext()) {
+//                val plane = var3.next() as Plane
+//
+//                //If a plane has been detected & is being tracked by ARCore
+//                if (plane.trackingState == TrackingState.TRACKING) {
+//
+//                    //Hide the plane discovery helper animation
+//                    arFragment.planeDiscoveryController.hide()
+//
+//
+//                    //Get all added anchors to the frame
+//                    val iterableAnchor = frame.updatedAnchors.iterator()
+//
+//                    //place the first object only if no previous anchors were added
+//                    if (!iterableAnchor.hasNext()) {
+//                        //Perform a hit test at the center of the screen to place an object without tapping
+//                        val hitTest = frame.hitTest(screenCenter().x, screenCenter().y)
+//
+//                        //iterate through all hits
+//                        val hitTestIterator = hitTest.iterator()
+//                        while (hitTestIterator.hasNext()) {
+//                            if (!createdInitialObject) {
+//                                val hitResult = hitTestIterator.next()
+//
+//                                //Create an anchor at the plane hit
+//                                val modelAnchor = plane.createAnchor(hitResult.hitPose)
+//
+//                                //Attach a node to this anchor with the scene as the parent
+//                                val anchorNode = AnchorNode(modelAnchor)
+//                                anchorNode.setParent(arFragment.arSceneView.scene)
+//
+//
+//                                createModel(anchorNode)
+//                                //Alter the real world position to ensure object renders on the table top. Not somewhere inside.
+//                                checker = 1
+//                                createdInitialObject = true
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
 
     }
 
     //A method to find the screen center. This is used while placing objects in the scene
-    private fun Frame.screenCenter(): Vector3 {
+    private fun screenCenter(): Vector3 {
         val vw = findViewById<View>(android.R.id.content)
         return Vector3(vw.width / 2f, vw.height / 2f, 0f)
     }
 
-    private fun createModel(anchorNode: AnchorNode, selected: Int): TransformableNode {
+    private fun createModel(anchorNode: AnchorNode) {
         val node = TransformableNode(arFragment.transformationSystem)
         node.setParent(anchorNode)
         val arObject = arData[selected]
         arObject?.sound?.start()
-
-//        Texture.builder()
-//            .setSource(intent.getParcelableExtra("BITMAP") as Bitmap)
-//            .setSource(Bitmap.createBitmap(1000, 1000, Bitmap.Config.ARGB_8888))
-//            .build()
 
         val nodeSetup = {
             node.localScale = Vector3(50f, 50f, 50f)
@@ -297,11 +285,21 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
             node.scaleController.minScale = 10f
             node.select()
             addName(anchorNode, node, arObject?.modelName.orEmpty())
+            node.worldPosition = Vector3(
+                anchorNode.anchor?.pose!!.tx(),
+                anchorNode.anchor?.pose!!.compose(Pose.makeTranslation(0f, 0.05f, 0f)).ty(),
+                anchorNode.anchor?.pose!!.tz()
+            )
         }
-        if (intent.hasExtra("COLORS") && intent.hasExtra("ANIMAL_IMAGE")) {
-//            val bmp = createPattern(intent.getIntegerArrayListExtra("COLORS") ?: listOf())
-            val byteArray = intent.getByteArrayExtra("ANIMAL_IMAGE")
-            val bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+        if (intent.hasExtra("PATTERN1") || intent.hasExtra("PATTERN2") || intent.hasExtra("ANIMAL_IMAGE")) {
+            val bmp = when {
+                intent.hasExtra("PATTERN1") -> createPattern(intent.getIntegerArrayListExtra("COLORS") ?: listOf(), 1)
+                intent.hasExtra("PATTERN2") -> createPattern(intent.getIntegerArrayListExtra("COLORS") ?: listOf(), 2)
+                else -> {
+                    val byteArray = intent.getByteArrayExtra("ANIMAL_IMAGE")
+                    BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+                }
+            }
             Texture
                 .builder()
                 .setSource(bmp)
@@ -322,7 +320,6 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
             arData[selected]?.sound?.start()
             nodeSetup()
         }
-        return node
     }
 
     private fun addName(anchorNode: AnchorNode, node: TransformableNode, name: String) {
