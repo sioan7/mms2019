@@ -7,18 +7,20 @@
 
 
     <fragment
-            android:id = "@+id/scene_form_fragment"
-            android:name = "com.google.ar.sceneform.ux.ArFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-           />
-    
-    <HorizontalScrollView android:layout_width="match_parent" android:layout_height="wrap_content">
+        android:id="@+id/scene_form_fragment"
+        android:name="com.google.ar.sceneform.ux.ArFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
         <LinearLayout
-                android:id="@+id/list"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/bear"
@@ -28,71 +30,81 @@
                 android:tag="0" />
 
             <ImageView
-                    android:tag="1"
-                    android:id="@+id/cat"
-                    android:src="@drawable/cat"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"/>
+                android:id="@+id/cat"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/cat"
+                android:tag="1" />
+
             <ImageView
-                    android:id="@+id/cow"
-                    android:tag="2"
-                    android:src="@drawable/cow"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"/>
+                android:id="@+id/cow"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/cow"
+                android:tag="2" />
+
             <ImageView
-                    android:tag="3"
-                    android:id="@+id/dog"
-                    android:src="@drawable/dog"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"/>
+                android:id="@+id/dog"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/dog"
+                android:tag="3" />
+
             <ImageView
-                    android:tag="4"
-                    android:id="@+id/elephant"
-                    android:src="@drawable/elephant"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"/>
+                android:id="@+id/elephant"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/elephant"
+                android:tag="4" />
+
             <ImageView
-                    android:tag="5"
-                    android:id="@+id/ferret"
-                    android:src="@drawable/ferret"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"/>
+                android:id="@+id/ferret"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ferret"
+                android:tag="5" />
+
             <ImageView
-                    android:tag="6"
-                    android:id="@+id/hippopotamus"
-                    android:src="@drawable/hippopotamus"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"/>
+                android:id="@+id/hippopotamus"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/hippopotamus"
+                android:tag="6" />
+
             <ImageView
-                    android:tag="7"
-                    android:id="@+id/horse"
-                    android:src="@drawable/horse"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"/>
+                android:id="@+id/horse"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/horse"
+                android:tag="7" />
+
             <ImageView
-                    android:tag="8"
-                    android:id="@+id/koala_bear"
-                    android:src="@drawable/koala_bear"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"/>
+                android:id="@+id/koala_bear"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/koala_bear"
+                android:tag="8" />
+
             <ImageView
-                    android:tag="9"
-                    android:id="@+id/lion"
-                    android:src="@drawable/lion"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"/>
+                android:id="@+id/lion"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/lion"
+                android:tag="9" />
+
             <ImageView
-                    android:tag="10"
-                    android:id="@+id/reindeer"
-                    android:src="@drawable/reindeer"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"/>
+                android:id="@+id/reindeer"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/reindeer"
+                android:tag="10" />
+
             <ImageView
-                    android:tag="11"
-                    android:id="@+id/wolverine"
-                    android:src="@drawable/wolverine"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"/>
+                android:id="@+id/wolverine"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/wolverine"
+                android:tag="11" />
 
         </LinearLayout>
     </HorizontalScrollView>
@@ -106,7 +118,8 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:background="?android:attr/selectableItemBackground"
-        android:text="@string/take_screenshot"/>
+        android:text="@string/take_screenshot" />
+
     <Button
         android:id="@+id/btnShare"
         android:layout_width="wrap_content"
@@ -116,7 +129,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         android:background="?android:attr/selectableItemBackground"
-        android:text="@string/share"/>
+        android:text="@string/share" />
 
 
 </FrameLayout>
