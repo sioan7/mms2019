@@ -8,32 +8,32 @@ import android.view.MotionEvent
 import android.view.WindowManager
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.graphics.scale
+import java.util.*
 
 
 class CanvasView
 @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null
-) : AppCompatImageView(context) {
-
-    val color = Color.MAGENTA
+) : AppCompatImageView(context, attributeSet) {
 
     private val path = Path()
-    private val brush = Paint()
+    val brush = Paint()
+    val INITIAL_COLOR = Color.CYAN
     private val pBackground = Paint()
     private val pText = Paint()
 
     private val dm = DisplayMetrics()
     private val wm: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
-    private var bmpImage: Bitmap = BitmapFactory
+    var bmpImage: Bitmap = BitmapFactory
         .decodeResource(resources, context.getSharedPreferences("PREFERENCE_NAME",Context.MODE_PRIVATE).getInt("Canvas",0))
         .copy(Bitmap.Config.ARGB_8888, true)
     private var imagePosition: RectF
 
     init {
         brush.isAntiAlias = true
-        brush.color = color
+        brush.color = INITIAL_COLOR
         brush.style = Paint.Style.STROKE
         brush.strokeJoin = Paint.Join.ROUND
         brush.strokeWidth = 8f
@@ -59,10 +59,13 @@ class CanvasView
         if (bmpImage.getPixel(x, y) == Color.valueOf(250f / 255f, 250f / 255f, 250f / 255f).toArgb()) return false
         if (bmpImage.getPixel(x, y) == Color.valueOf(244f / 255f, 244f / 255f, 244f / 255f).toArgb()) return false
         if (bmpImage.getPixel(x, y) == Color.BLACK) return false
-        if (Color.valueOf(bmpImage.getPixel(x, y)).red() < .5) return false
+        val avgColor = (Color.valueOf(bmpImage.getPixel(x, y))).let {
+            (it.red() + it.blue() + it.green()) / 3
+        }
+        if (avgColor < .1) return false
         return when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                val floodFiller = QueueLinearFloodFiller(bmpImage, bmpImage.getPixel(x, y), Color.MAGENTA)
+                val floodFiller = QueueLinearFloodFiller(bmpImage, bmpImage.getPixel(x, y), brush.color)
                 floodFiller.setTolerance(10)
                 floodFiller.floodFill(x, y)
                 postInvalidate()
@@ -81,6 +84,8 @@ class CanvasView
              dm.heightPixels / 2 + bitmap.height * scalingFactor
          )
     }
+
+
 
 }
 

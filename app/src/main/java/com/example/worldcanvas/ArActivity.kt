@@ -3,6 +3,7 @@ package com.example.worldcanvas
 import android.Manifest
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.MediaPlayer
 import android.net.Uri
@@ -25,6 +26,7 @@ import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.MaterialFactory
 import com.google.ar.sceneform.rendering.ModelRenderable
+import com.google.ar.sceneform.rendering.Texture
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
@@ -56,15 +58,15 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
     private var btnSS: Button? = null
     private var btnshare: Button? = null
     private var sharePath = "no"
+    private var createdInitialObject = false
 
     private var arData = mutableMapOf<Int, ARObject>()
     private var selected: Int = 0
     private var checker: Int = 0
 
     override fun onClick(view: View?) {
-        selected = arData.values.find { it.view.id == view!!.tag.toString().toInt() }?.resourceId
-                ?: 0
-        mySetBackground(view!!.id)
+        selected = view!!.tag.toString().toInt()
+        mySetBackground(view.id)
     }
 
     private fun mySetBackground(id: Int) {
@@ -83,7 +85,6 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
         arFragment = supportFragmentManager.findFragmentById(R.id.scene_form_fragment) as ArFragment
 
         arFragment.arSceneView.scene.addOnUpdateListener(this@ArActivity)
-
 
         arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
             val anchor = hitResult.createAnchor()
@@ -235,47 +236,28 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
                         //iterate through all hits
                         val hitTestIterator = hitTest.iterator()
                         while (hitTestIterator.hasNext()) {
-                            val hitResult = hitTestIterator.next()
+                            if (!createdInitialObject) {
+                                val hitResult = hitTestIterator.next()
 
-                            //Create an anchor at the plane hit
-                            val modelAnchor = plane.createAnchor(hitResult.hitPose)
+                                //Create an anchor at the plane hit
+                                val modelAnchor = plane.createAnchor(hitResult.hitPose)
 
-                            //Attach a node to this anchor with the scene as the parent
-                            val anchorNode = AnchorNode(modelAnchor)
-                            anchorNode.setParent(arFragment.arSceneView.scene)
+                                //Attach a node to this anchor with the scene as the parent
+                                val anchorNode = AnchorNode(modelAnchor)
+                                anchorNode.setParent(arFragment.arSceneView.scene)
 
-                            //create a new TranformableNode that will carry our object
-                            val transformableNode = TransformableNode(arFragment.transformationSystem)
-                            transformableNode.setParent(anchorNode)
-                            val nodeSetup = {
-                                transformableNode.localScale = Vector3(50f, 50f, 50f)
-                                transformableNode.scaleController.maxScale = 50f
-                                transformableNode.scaleController.minScale = 10f
-                                transformableNode.select()
-                                addName(anchorNode, transformableNode, arData[selected]?.modelName.orEmpty())
-                            }
-                            if (intent.hasExtra("COLOR")) {
-                                val customColor = intent.getIntExtra("COLOR", Color.MAGENTA)
-                                MaterialFactory
-                                        .makeOpaqueWithColor(this, com.google.ar.sceneform.rendering.Color(customColor))
-                                        .thenAccept {
-                                            val model = arData[selected]?.model
-                                            model?.material = it
-                                            transformableNode.renderable = model
-                                            arData[selected]?.sound?.start()
-                                            nodeSetup()
-                                        }
-                            } else {
-                                transformableNode.renderable = arData[selected]?.model
-                                arData[selected]?.sound?.start()
-                                nodeSetup()
-                            }
 
-                            //Alter the real world position to ensure object renders on the table top. Not somewhere inside.
-                            transformableNode.worldPosition = Vector3(modelAnchor.pose.tx(),
+                                val node = createModel(anchorNode, selected)
+
+                                //Alter the real world position to ensure object renders on the table top. Not somewhere inside.
+                                node.worldPosition = Vector3(
+                                    modelAnchor.pose.tx(),
                                     modelAnchor.pose.compose(Pose.makeTranslation(0f, 0.05f, 0f)).ty(),
-                                    modelAnchor.pose.tz())
-                            checker = 1
+                                    modelAnchor.pose.tz()
+                                )
+                                checker = 1
+                                createdInitialObject = true
+                            }
                         }
                     }
                 }
@@ -290,13 +272,11 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
         return Vector3(vw.width / 2f, vw.height / 2f, 0f)
     }
 
-    private fun createModel(anchorNode: AnchorNode, selected: Int) {
+    private fun createModel(anchorNode: AnchorNode, selected: Int): TransformableNode {
         val node = TransformableNode(arFragment.transformationSystem)
         node.setParent(anchorNode)
         val arObject = arData[selected]
-        if (arObject != null) {
-            arObject.sound.start()
-        }
+        arObject?.sound?.start()
 
 //        Texture.builder()
 //            .setSource(intent.getParcelableExtra("BITMAP") as Bitmap)
@@ -310,20 +290,31 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
             node.select()
             addName(anchorNode, node, arObject?.modelName.orEmpty())
         }
-        if (intent.hasExtra("COLOR")) {
-            val customColor = intent.getIntExtra("COLOR", Color.MAGENTA)
-            MaterialFactory
-                    .makeOpaqueWithColor(this, com.google.ar.sceneform.rendering.Color(customColor))
-                    .thenAccept {
-                        val model = arObject?.model
-                        model?.material = it
-                        node.renderable = model
-                        nodeSetup()
-                    }
+        if (intent.hasExtra("COLORS") && intent.hasExtra("ANIMAL_IMAGE")) {
+            val bmp = createPattern(intent.getIntegerArrayListExtra("COLORS") ?: listOf())
+//            val byteArray = intent.getByteArrayExtra("ANIMAL_IMAGE")
+//            val bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+            Texture
+                .builder()
+                .setSource(bmp)
+                .build()
+                .thenAccept { texture ->
+                    MaterialFactory
+                        .makeOpaqueWithTexture(this, texture)
+                        .thenAccept {
+                            val model = arData[selected]?.model
+                            model?.material = it
+                            node.renderable = model
+                            arData[selected]?.sound?.start()
+                            nodeSetup()
+                        }
+                }
         } else {
-            node.renderable = arObject?.model
+            node.renderable = arData[selected]?.model
+            arData[selected]?.sound?.start()
             nodeSetup()
         }
+        return node
     }
 
     private fun addName(anchorNode: AnchorNode, node: TransformableNode, name: String) {
@@ -336,9 +327,9 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
                     nameView.renderable = viewRenderable
                     nameView.select()
 
-                    val txt_name = viewRenderable.view as TextView
-                    txt_name.text = name
-                    txt_name.setOnClickListener {
+                    val txtName = viewRenderable.view as TextView
+                    txtName.text = name
+                    txtName.setOnClickListener {
                         anchorNode.setParent(null)
                     }
 
