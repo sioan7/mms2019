@@ -115,11 +115,12 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
 
 
         btnSS!!.setOnClickListener {
+           // btnshare!!.visibility = VISIBLE
             takePhoto(arFragment)
-            btnshare!!.visibility = VISIBLE
             Toast.makeText(applicationContext, "Screenshot was taken and saved in your gallery", Toast.LENGTH_LONG)
                     .show()
-            Thread.sleep(500)
+            Thread.sleep(100)
+
 
 
         }
@@ -173,6 +174,7 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
                         val filePath = imageFile.path
 
                         sharePath = filePath
+                       // btnshare!!.visibility = VISIBLE
 
 
 
