@@ -47,12 +47,12 @@ class CanvasActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    fun goToAR(view: View) {
-        val intent = Intent(this, ArActivity::class.java)
-        intent.putExtra("Object", element)
-        intent.putExtra("Position", position)
-        startActivity(intent)
-    }
+//    fun goToAR(view: View) {
+//        val intent = Intent(this, ArActivity::class.java)
+//        intent.putExtra("Object", element)
+//        intent.putExtra("Position", position)
+//        startActivity(intent)
+//    }
 
     fun goToARWithPattern1(view: View) {
         val intent = Intent(this, ArActivity::class.java)
