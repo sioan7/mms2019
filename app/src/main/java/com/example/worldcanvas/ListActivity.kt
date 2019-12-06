@@ -116,6 +116,8 @@ class ListActivity : AppCompatActivity() {
     override fun onBackPressed() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
+        finish();
+
     }
 
     private fun goToCanvas(position: Int) {
@@ -124,6 +126,7 @@ class ListActivity : AppCompatActivity() {
         intent.putExtra("Model",listOfModels[position])
         intent.putExtra("Position", position)
         startActivity(intent)
+
     }
 
     private fun showSignInOptions() {
