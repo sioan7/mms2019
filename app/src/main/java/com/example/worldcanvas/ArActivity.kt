@@ -13,6 +13,7 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.os.StrictMode
 import android.provider.MediaStore
+import android.transition.Visibility
 import android.util.Log
 import android.view.PixelCopy
 import android.view.View
@@ -73,7 +74,7 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
     }
 
     override fun onBackPressed() {
-        val intent = Intent(this, ListActivity::class.java)
+        val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
     }
 
@@ -94,6 +95,10 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
         arFragment = supportFragmentManager.findFragmentById(R.id.scene_form_fragment) as ArFragment
 
         arFragment.arSceneView.scene.addOnUpdateListener(this@ArActivity)
+
+        if (!intent.hasExtra("Object")) {
+            listOfAnimals.visibility = View.VISIBLE
+        }
 
         arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
             val anchor = hitResult.createAnchor()
