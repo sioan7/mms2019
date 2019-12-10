@@ -47,13 +47,6 @@ class CanvasActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-//    fun goToAR(view: View) {
-//        val intent = Intent(this, ArActivity::class.java)
-//        intent.putExtra("Object", element)
-//        intent.putExtra("Position", position)
-//        startActivity(intent)
-//    }
-
     fun goToARWithPattern1(view: View) {
         val intent = Intent(this, ArActivity::class.java)
         intent.putIntegerArrayListExtra("COLORS", ArrayList(usedColors))
@@ -102,8 +95,8 @@ class CanvasActivity : AppCompatActivity() {
     fun setProgress(view: View) {
         GlobalScope.launch(context = Dispatchers.Main.immediate) {
             val percentage =
-                withContext(Dispatchers.Default) { canvas_view.calculateProgress() }
-                .roundToInt()
+                    withContext(Dispatchers.Default) { canvas_view.calculateProgress() }
+                            .roundToInt()
 
             progress.text = when {
                 progressValue > percentage -> "It's wrong! Try again."

@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.FirebaseAuth
 
 
@@ -16,7 +15,6 @@ class MainActivity : AppCompatActivity() {
 
     private val MY_REQUEST_CODE: Int = 1
     lateinit var providers: List<AuthUI.IdpConfig>
-    private var mGoogleSignInClient: GoogleSignInClient? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,16 +26,11 @@ class MainActivity : AppCompatActivity() {
                 AuthUI.IdpConfig.GoogleBuilder().build(),
                 AuthUI.IdpConfig.PhoneBuilder().build()
         )
-            if(FirebaseAuth.getInstance().currentUser == null) {
-                showSignInOptions()
-            }else {
-                setContentView(R.layout.activity_main)
-            }
-//        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                .requestIdToken(getString(R.string.default_web_client_id))
-//                .requestEmail()
-//                .build();
-//        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        if (FirebaseAuth.getInstance().currentUser == null) {
+            showSignInOptions()
+        } else {
+            setContentView(R.layout.activity_main)
+        }
 
     }
 
@@ -49,8 +42,7 @@ class MainActivity : AppCompatActivity() {
             if (resultCode == Activity.RESULT_OK) {
                 val user = FirebaseAuth.getInstance().currentUser
                 Toast.makeText(this, user!!.email, Toast.LENGTH_SHORT).show()
-//                var i = Intent(this, ListActivity::class.java)
-//                startActivity(i)
+
                 setContentView(R.layout.activity_main)
             } else {
                 Toast.makeText(this, response!!.error!!.message, Toast.LENGTH_SHORT).show()
@@ -89,9 +81,7 @@ class MainActivity : AppCompatActivity() {
                 .addOnFailureListener { e ->
                     Toast.makeText(this@MainActivity, e.message, Toast.LENGTH_SHORT).show()
                 }
-       // mGoogleSignInClient!!.signOut().addOnCompleteListener(this) { }
     }
-
 
 
     override fun onBackPressed() {

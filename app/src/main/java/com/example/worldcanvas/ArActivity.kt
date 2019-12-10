@@ -23,8 +23,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.ar.core.Pose
 import com.google.ar.sceneform.AnchorNode
-import com.google.ar.sceneform.FrameTime
-import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.MaterialFactory
 import com.google.ar.sceneform.rendering.ModelRenderable
@@ -52,7 +50,7 @@ data class ARObject(
         val sound: MediaPlayer
 )
 
-class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateListener {
+class ArActivity : AppCompatActivity(), View.OnClickListener {
 
 
     private lateinit var mediaPlayer: MediaPlayer
@@ -60,12 +58,10 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
     private var btnSS: Button? = null
     private var btnshare: Button? = null
     private var sharePath = "no"
-    private var createdInitialObject = false
 
     private var arData = mutableMapOf<Int, ARObject>()
     private var selected: Int = 0
-    private var checker: Int = 0
-    private lateinit var context:Context
+    private lateinit var context: Context
     override fun onClick(view: View?) {
         selected = view!!.tag.toString().toInt()
         mySetBackground(view.id)
@@ -92,8 +88,6 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
         selected = intent.getIntExtra("Position", 0)
         arFragment = supportFragmentManager.findFragmentById(R.id.scene_form_fragment) as ArFragment
 
-        arFragment.arSceneView.scene.addOnUpdateListener(this@ArActivity)
-
         if (!intent.hasExtra("Object")) {
             listOfAnimals.visibility = VISIBLE
         }
@@ -115,12 +109,10 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
 
 
         btnSS!!.setOnClickListener {
-           // btnshare!!.visibility = VISIBLE
             takePhoto(arFragment)
             Toast.makeText(applicationContext, "Screenshot was taken and saved in your gallery", Toast.LENGTH_LONG)
                     .show()
             Thread.sleep(100)
-
 
 
         }
@@ -128,7 +120,7 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
 
 
         btnshare!!.setOnClickListener {
-                share(sharePath)
+            share(sharePath)
 
         }
 
@@ -174,8 +166,7 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
                         val filePath = imageFile.path
 
                         sharePath = filePath
-                       // btnshare!!.visibility = VISIBLE
-
+                        // btnshare!!.visibility = VISIBLE
 
 
                         MediaStore.Images.Media.insertImage(contentResolver, filePath, imageFile.name, imageFile.name)
@@ -186,7 +177,6 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
                     }
                 }
                 handlerThread.quitSafely()
-
 
 
             }
@@ -237,59 +227,6 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
                 .check()
     }
 
-    override fun onUpdate(p0: FrameTime?) {
-//        //get the frame from the scene for shorthand
-//        val frame = arFragment.arSceneView.arFrame
-//        //val arObject = arData[selected]
-//
-//        if (frame != null && checker == 0) {
-//            //get the trackables to ensure planes are detected
-//            val var3 = frame.getUpdatedTrackables(Plane::class.java).iterator()
-//            while (var3.hasNext()) {
-//                val plane = var3.next() as Plane
-//
-//                //If a plane has been detected & is being tracked by ARCore
-//                if (plane.trackingState == TrackingState.TRACKING) {
-//
-//                    //Hide the plane discovery helper animation
-//                    arFragment.planeDiscoveryController.hide()
-//
-//
-//                    //Get all added anchors to the frame
-//                    val iterableAnchor = frame.updatedAnchors.iterator()
-//
-//                    //place the first object only if no previous anchors were added
-//                    if (!iterableAnchor.hasNext()) {
-//                        //Perform a hit test at the center of the screen to place an object without tapping
-//                        val hitTest = frame.hitTest(screenCenter().x, screenCenter().y)
-//
-//                        //iterate through all hits
-//                        val hitTestIterator = hitTest.iterator()
-//                        while (hitTestIterator.hasNext()) {
-//                            if (!createdInitialObject) {
-//                                val hitResult = hitTestIterator.next()
-//
-//                                //Create an anchor at the plane hit
-//                                val modelAnchor = plane.createAnchor(hitResult.hitPose)
-//
-//                                //Attach a node to this anchor with the scene as the parent
-//                                val anchorNode = AnchorNode(modelAnchor)
-//                                anchorNode.setParent(arFragment.arSceneView.scene)
-//
-//
-//                                createModel(anchorNode)
-//                                //Alter the real world position to ensure object renders on the table top. Not somewhere inside.
-//                                checker = 1
-//                                createdInitialObject = true
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-
-    }
-
     //A method to find the screen center. This is used while placing objects in the scene
     private fun screenCenter(): Vector3 {
         val vw = findViewById<View>(android.R.id.content)
@@ -309,35 +246,37 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
             node.select()
             addName(anchorNode, node, arObject?.modelName.orEmpty())
             node.worldPosition = Vector3(
-                anchorNode.anchor?.pose!!.tx(),
-                anchorNode.anchor?.pose!!.compose(Pose.makeTranslation(0f, 0.05f, 0f)).ty(),
-                anchorNode.anchor?.pose!!.tz()
+                    anchorNode.anchor?.pose!!.tx(),
+                    anchorNode.anchor?.pose!!.compose(Pose.makeTranslation(0f, 0.05f, 0f)).ty(),
+                    anchorNode.anchor?.pose!!.tz()
             )
         }
         if (intent.hasExtra("PATTERN1") || intent.hasExtra("PATTERN2") || intent.hasExtra("ANIMAL_IMAGE")) {
             val bmp = when {
-                intent.hasExtra("PATTERN1") -> createPattern(intent.getIntegerArrayListExtra("COLORS") ?: listOf(), 1)
-                intent.hasExtra("PATTERN2") -> createPattern(intent.getIntegerArrayListExtra("COLORS") ?: listOf(), 2)
+                intent.hasExtra("PATTERN1") -> createPattern(intent.getIntegerArrayListExtra("COLORS")
+                        ?: listOf(), 1)
+                intent.hasExtra("PATTERN2") -> createPattern(intent.getIntegerArrayListExtra("COLORS")
+                        ?: listOf(), 2)
                 else -> {
                     val byteArray = intent.getByteArrayExtra("ANIMAL_IMAGE")
                     BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
                 }
             }
             Texture
-                .builder()
-                .setSource(bmp)
-                .build()
-                .thenAccept { texture ->
-                    MaterialFactory
-                        .makeOpaqueWithTexture(this, texture)
-                        .thenAccept {
-                            val model = arData[selected]?.model
-                            model?.material = it
-                            node.renderable = model
-                            arData[selected]?.sound?.start()
-                            nodeSetup()
-                        }
-                }
+                    .builder()
+                    .setSource(bmp)
+                    .build()
+                    .thenAccept { texture ->
+                        MaterialFactory
+                                .makeOpaqueWithTexture(this, texture)
+                                .thenAccept {
+                                    val model = arData[selected]?.model
+                                    model?.material = it
+                                    node.renderable = model
+                                    arData[selected]?.sound?.start()
+                                    nodeSetup()
+                                }
+                    }
         } else {
             node.renderable = arData[selected]?.model
             arData[selected]?.sound?.start()
