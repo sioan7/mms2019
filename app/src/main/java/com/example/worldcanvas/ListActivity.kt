@@ -47,7 +47,7 @@ class ListActivity : AppCompatActivity() {
         setupArray()
         val mapNamesToImages = LinkedHashMap<String, Int>()
         for (i in 0 until listOfAnimals.size) {
-            mapNamesToImages[listOfAnimals[i]] = listOfResources[i]
+            mapNamesToImages[listOfAnimals[i]] = listOfModels[i]
         }
         val adapter = CustomAdapter(this, listOfAnimals, mapNamesToImages)
         mListView.adapter = adapter
@@ -162,10 +162,10 @@ class ListActivity : AppCompatActivity() {
             R.raw.dog_image,
             R.raw.elephant_image,
             R.raw.ferret_image,
-            R.raw.hippopotamus_image,
+            R.raw.hippo,
             R.raw.horse_image,
             R.raw.koala_bear_image,
-            R.raw.lion_bmp,
+            R.raw.lion_image,
             R.raw.reindeer_image,
             R.raw.wolverine_image
         )
@@ -175,14 +175,14 @@ class ListActivity : AppCompatActivity() {
             R.raw.cat_image_c,
             R.raw.cow_image_c,
             R.raw.dog_image_c,
-            R.raw.elephant_image,
-            R.raw.ferret_image,
-            R.raw.hippopotamus_image,
-            R.raw.horse_image,
-            R.raw.koala_bear_image,
-            R.raw.lion_bmp,
-            R.raw.reindeer_image,
-            R.raw.wolverine_image
+            R.raw.elephant_c,
+            R.raw.ferret_c,
+            R.raw.hippo_c,
+            R.raw.horse_c,
+            R.raw.koala_bear_c,
+            R.raw.lion_c,
+            R.raw.reindeer_c,
+            R.raw.wolverine_c
         )
     }
 
