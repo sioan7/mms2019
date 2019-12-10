@@ -106,7 +106,7 @@ class CanvasActivity : AppCompatActivity() {
                 .roundToInt()
 
             progress.text = when {
-                progressValue >= percentage -> "It's wrong! Try again."
+                progressValue > percentage -> "It's wrong! Try again."
                 percentage < 10 -> "Let's paint!"
                 percentage >= 90 -> "Perfect!"
                 else -> "Great! Keep going."

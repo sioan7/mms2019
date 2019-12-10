@@ -13,17 +13,15 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.os.StrictMode
 import android.provider.MediaStore
-import android.transition.Visibility
 import android.util.Log
 import android.view.PixelCopy
 import android.view.View
+import android.view.View.VISIBLE
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.ar.core.Plane
 import com.google.ar.core.Pose
-import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.Scene
@@ -97,7 +95,7 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
         arFragment.arSceneView.scene.addOnUpdateListener(this@ArActivity)
 
         if (!intent.hasExtra("Object")) {
-            listOfAnimals.visibility = View.VISIBLE
+            listOfAnimals.visibility = VISIBLE
         }
 
         arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
@@ -117,11 +115,16 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
 
 
         btnSS!!.setOnClickListener {
+           // btnshare!!.visibility = VISIBLE
             takePhoto(arFragment)
             Toast.makeText(applicationContext, "Screenshot was taken and saved in your gallery", Toast.LENGTH_LONG)
                     .show()
-            Thread.sleep(500)
+            Thread.sleep(100)
+
+
+
         }
+
 
 
         btnshare!!.setOnClickListener {
@@ -130,6 +133,10 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
         }
 
 
+    }
+
+    private fun buttonShareVisible(btnshare: Button) {
+        btnshare.visibility = VISIBLE;
     }
 
     fun takePhoto(arFragment: ArFragment) {
@@ -167,6 +174,8 @@ class ArActivity : AppCompatActivity(), View.OnClickListener, Scene.OnUpdateList
                         val filePath = imageFile.path
 
                         sharePath = filePath
+                       // btnshare!!.visibility = VISIBLE
+
 
 
                         MediaStore.Images.Media.insertImage(contentResolver, filePath, imageFile.name, imageFile.name)

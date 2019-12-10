@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="70dp"
         android:text="@string/initial_progress"
         android:textColor="@color/colorPrimary"
         android:textSize="36sp" />
